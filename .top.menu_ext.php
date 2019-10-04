@@ -10,6 +10,7 @@ if (SITE_TEMPLATE_ID !== "bitrix24")
 }
 
 global $APPLICATION;
+global $USER;
 
 IncludeModuleLangFile($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/intranet/public/.top.menu_ext.php");
 
@@ -60,6 +61,9 @@ $arMenuB24 = array(
 		""
 	)
 );
+
+// init.php
+forceMenuDimser($arMenuB24);
 
 if ($GLOBALS["USER"]->IsAuthorized() && CModule::IncludeModule("socialnetwork"))
 {
@@ -575,4 +579,8 @@ while ($site = $rsSite->Fetch())
 	}
 }
 
+
+// if (isset($_REQUEST['debug'])) {
+
+// }
 $aMenuLinks = $arMenuB24;
