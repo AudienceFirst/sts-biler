@@ -491,6 +491,11 @@ class CIntranetStructureListComponent extends CBitrixComponent
 				$this->getCacheManager()->registerTag('intranet_users');
 			}
 		}
+    
+        // SUPPORT-1154
+        $this->arFilter['UF_DEPARTMENT'] = $this->departmentIdByUrl();
+        unset($this->arFilter['!UF_DEPARTMENT']);
+        unset($this->arFilter['!EXTERNAL_AUTH_ID']);
 
 		if(!$bFromCache)
 		{
@@ -925,4 +930,43 @@ class CIntranetStructureListComponent extends CBitrixComponent
 
 		return $CACHE_MANAGER;
 	}
+
+    public function departmentIdByUrl()
+    {
+        $department = 414; // ddb
+
+        global $APPLICATION;
+
+        if (stripos($APPLICATION->GetCurPage(), '/auto/')!==false) {
+            $department = 56; // autohallen
+        }
+
+        if (stripos($APPLICATION->GetCurPage(), '/era/')!==false) {
+            $department = 51; // era biler
+        }
+
+        if (stripos($APPLICATION->GetCurPage(), '/nhe/')!==false) {
+            $department = 55; // nhebiler
+        }
+
+        if (stripos($APPLICATION->GetCurPage(), '/mfa/')!==false) {
+            $department = 53; // mfabiler
+        }
+
+        if (stripos($APPLICATION->GetCurPage(), '/bilogco/')!==false) {
+            $department = 54; // bilogco
+        }
+
+        if (stripos($APPLICATION->GetCurPage(), '/sdk/')!==false) {
+            $department = 52; // sdk biler
+        }
+
+        if (stripos($APPLICATION->GetCurPage(), '/sts/')!==false) {
+            $department = 50; // sts biler
+        }
+
+        return $department;
+
+    }
 }
+
