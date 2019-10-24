@@ -3,10 +3,10 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 IncludeModuleLangFile($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/intranet/public/company/telephones.php");
 
 $APPLICATION->SetTitle(GetMessage("COMPANY_TITLE"));
-?><?$APPLICATION->IncludeComponent("bitrix:intranet.search", ".default", array(
+?><?$APPLICATION->IncludeComponent("make:intranet.search", "sts-phonelist", array(
 	"STRUCTURE_PAGE" => "structure.php",
-	"PM_URL" => "/company/personal/messages/chat/#USER_ID#/",
-	"PATH_TO_CONPANY_DEPARTMENT" => "/company/structure.php?set_filter_structure=Y&structure_UF_DEPARTMENT=#ID#",
+	"PM_URL" => "/auto/company/personal/messages/chat/#USER_ID#/",
+	"PATH_TO_CONPANY_DEPARTMENT" => "/auto/company/structure.php?set_filter_structure=Y&structure_UF_DEPARTMENT=#ID#",
 	"STRUCTURE_FILTER" => "structure",
 	"FILTER_1C_USERS" => "N",
 	"USERS_PER_PAGE" => "700",
@@ -33,7 +33,7 @@ $APPLICATION->SetTitle(GetMessage("COMPANY_TITLE"));
 	"DATE_FORMAT_NO_YEAR" => "F j",
 	"DATE_TIME_FORMAT" => "F j, Y h:i a",
 	"SHOW_YEAR" => "Y",
-	"PATH_TO_VIDEO_CALL" => "/company/personal/video/#USER_ID#/",
+	"PATH_TO_VIDEO_CALL" => "/auto/company/personal/video/#USER_ID#/",
 	"FILTER_NAME" => "users",
 	"FILTER_DEPARTMENT_SINGLE" => "Y",
 	"FILTER_SESSION" => "N",
