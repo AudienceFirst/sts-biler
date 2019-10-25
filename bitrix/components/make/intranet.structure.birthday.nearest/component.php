@@ -94,6 +94,7 @@ $arResult['CURRENT_USER'] = array();
 #force department locate
 //$arResult['DEPARTMENT'] = $arParams['DEPARTMENT'] > 0 ? $arParams['DEPARTMENT'] : (intval($_REQUEST['department']) > 0 ? intval($_REQUEST['department']) : 0);
 $arResult['DEPARTMENT'] = departmentIdByUrl();
+if(empty($arResult['DEPARTMENT'])) unset($arResult['DEPARTMENT']);
 
 if ($arParams['bCache'] && $arResult['DEPARTMENT'] > 0)
 {
@@ -307,7 +308,7 @@ $this->IncludeComponentTemplate();
 
 function departmentIdByUrl()
 {
-	$department = 414; // ddb
+	$department = null; // ddb
 
 	global $APPLICATION;
 
