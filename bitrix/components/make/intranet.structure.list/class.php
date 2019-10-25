@@ -493,9 +493,16 @@ class CIntranetStructureListComponent extends CBitrixComponent
 		}
     
         // SUPPORT-1154
-        $this->arFilter['UF_DEPARTMENT'] = $this->departmentIdByUrl();
-        unset($this->arFilter['!UF_DEPARTMENT']);
-        unset($this->arFilter['!EXTERNAL_AUTH_ID']);
+		$this->arFilter['UF_DEPARTMENT'] = $this->departmentIdByUrl();
+
+		if ($this->arFilter['UF_DEPARTMENT'] > 0 && (!CModule::IncludeModule('extranet') || !CExtranet::IsExtranetSite()))
+		{
+			$this->arFilter['UF_DEPARTMENT'] = CIntranetUtils::GetIBlockSectionChildren(intval($this->arFilter['UF_DEPARTMENT']));
+		}
+
+		unset($this->arFilter['!UF_DEPARTMENT']);
+		unset($this->arFilter['!EXTERNAL_AUTH_ID']);
+
 
 		if(!$bFromCache)
 		{
