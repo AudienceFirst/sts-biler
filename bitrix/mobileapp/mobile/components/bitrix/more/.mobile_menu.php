@@ -711,14 +711,14 @@ $menuStructure[] = [
 $menuSort = 3;
 
 #custom menu files
-if(array_intersect($getGroups, array(12))) include_once($_SERVER["DOCUMENT_ROOT"] . "/.mobile_menu.ext.php");
-if(array_intersect($getGroups, array(17))) include_once($_SERVER["DOCUMENT_ROOT"] . "/sts/.mobile_menu.ext.php");
-if(array_intersect($getGroups, array(19))) include_once($_SERVER["DOCUMENT_ROOT"] . "/era/.mobile_menu.ext.php");
-if(array_intersect($getGroups, array(21))) include_once($_SERVER["DOCUMENT_ROOT"] . "/mfa/.mobile_menu.ext.php");
-if(array_intersect($getGroups, array(23))) include_once($_SERVER["DOCUMENT_ROOT"] . "/bilogco/.mobile_menu.ext.php");
-if(array_intersect($getGroups, array(25))) include_once($_SERVER["DOCUMENT_ROOT"] . "/nhe/.mobile_menu.ext.php");
-if(array_intersect($getGroups, array(27))) include_once($_SERVER["DOCUMENT_ROOT"] . "/auto/.mobile_menu.ext.php");
-if(array_intersect($getGroups, array(29))) include_once($_SERVER["DOCUMENT_ROOT"] . "/sdk/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/sts/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/era/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/mfa/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/bilogco/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/nhe/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/auto/.mobile_menu.ext.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/sdk/.mobile_menu.ext.php");
 
 
 $voximplantInstalled = false;
