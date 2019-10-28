@@ -4,66 +4,94 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
 	die();
 }
 
-$menuStructure[] = [
-	"title" => "NHE",
-	"hidden" => false,
-	"sort" => $menuSort++,
-	"items" => [
-		[
-			"title" => "Værksted",
-			"useLetterImage" => true,
-			"color" => "#ed1c24",
-			"params" => [
-				"url" => "/nhe/ddb/vrk/index.php"
-			],
-			"id" => "custom_ddb1",
-        ],
-        [
-			"title" => "Salg",
-			"useLetterImage" => true,
-			"color" => "#1e3f5e",
-			"params" => [
-				"url" => "/nhe/ddb/salg/index.php"
-			],
-			"id" => "custom_ddb2",
-        ],
-        [
-			"title" => "CarPlanner",
-			"useLetterImage" => true,
-			"color" => "#8cd59f",
-			"params" => [
-				"url" => "/nhe/ddb/car/index.php"
-			],
-			"id" => "custom_ddb3",
-        ],
-        [
-			"title" => "BizFone",
-			"useLetterImage" => true,
-			"color" => "#5658fe",
-			"params" => [
-				"url" => "/nhe/ddb/biz/index.php"
-			],
-			"id" => "custom_ddb4",
-        ],
-        [
-			"title" => "HFGD",
-			"useLetterImage" => true,
-			"color" => "#459151",
-			"params" => [
-				"url" => "/nhe/ddb/hfgd/index.php"
-			],
-			"id" => "custom_ddb5",
-        ],
-        [
-			"title" => "Fraværsregistrering",
-			"useLetterImage" => true,
-			"color" => "#b1612a",
-			"params" => [
-				"url" => "/nhe/ddb/tm/index.php"
-			],
-			"id" => "custom_ddb6",
+$arItems = [];
+
+if(array_intersect($getGroups, array(91))) 
+{
+	array_push($arItems, [
+		"title" => "Værksted",
+		"useLetterImage" => true,
+		"color" => "#ed1c24",
+		"params" => [
+			"url" => "/sdk/ddb/vrk/index.php"
 		],
-	]
-];
+		"id" => "custom_ddb1",
+	]);
+}
+
+if(array_intersect($getGroups, array(102))) 
+{
+	array_push($arItems, [
+		"title" => "Salg",
+		"useLetterImage" => true,
+		"color" => "#1e3f5e",
+		"params" => [
+			"url" => "/sdk/ddb/salg/index.php"
+		],
+		"id" => "custom_ddb2",
+	]);
+}
+
+if(array_intersect($getGroups, array(87))) 
+{
+	array_push($arItems, [
+		"title" => "CarPlanner",
+		"useLetterImage" => true,
+		"color" => "#8cd59f",
+		"params" => [
+			"url" => "/sdk/ddb/car/index.php"
+		],
+		"id" => "custom_ddb3",
+	]);
+}
+
+if(array_intersect($getGroups, array(86))) 
+{
+	array_push($arItems, [
+		"title" => "BizFone",
+		"useLetterImage" => true,
+		"color" => "#5658fe",
+		"params" => [
+			"url" => "/sdk/ddb/biz/index.php"
+		],
+		"id" => "custom_ddb4",
+	]);
+}
+
+if(array_intersect($getGroups, array(51))) 
+{
+	array_push($arItems, [
+		"title" => "HFGD",
+		"useLetterImage" => true,
+		"color" => "#459151",
+		"params" => [
+			"url" => "/nhe/ddb/hfgd/index.php"
+		],
+		"id" => "custom_ddb5",
+	]);
+}
+
+if(array_intersect($getGroups, array(114))) 
+{
+	array_push($arItems, [
+		"title" => "Fraværsregistrering",
+		"useLetterImage" => true,
+		"color" => "#b1612a",
+		"params" => [
+			"url" => "/sdk/ddb/tm/index.php"
+		],
+		"id" => "custom_ddb6",
+	]);
+}
+
+if(!empty($arItems))
+{
+	$menuStructure[] = [
+		"title" => "NHE",
+		"hidden" => false,
+		"sort" => $menuSort++,
+		"items" => $arItems
+	];
+}
 
 ?>
