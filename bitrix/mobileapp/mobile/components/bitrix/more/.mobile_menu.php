@@ -708,23 +708,18 @@ $menuStructure[] = [
 	]
 ];
 
-$menuStructure[] = [
-	"title" => "CUSTOM",
-	"hidden" => false,
-	"sort" => 3,
-	"items" => [
-		[
-			"title" => "STS Biler",
-			"useLetterImage" => true,
-			"color" => "#ED1C24",
-			"params" => [
-				"url" => "https://www.google.com/"
-			],
-			"hidden" => !array_intersect($getGroups, array(17)),
-			"id" => "custom_google",
-		],
-	]
-];
+$menuSort = 3;
+
+#custom menu files
+if(array_intersect($getGroups, array(12))) include_once($_SERVER["DOCUMENT_ROOT"] . "/.mobile_menu.ext.php");
+if(array_intersect($getGroups, array(17))) include_once($_SERVER["DOCUMENT_ROOT"] . "/sts/.mobile_menu.ext.php");
+if(array_intersect($getGroups, array(19))) include_once($_SERVER["DOCUMENT_ROOT"] . "/era/.mobile_menu.ext.php");
+if(array_intersect($getGroups, array(21))) include_once($_SERVER["DOCUMENT_ROOT"] . "/mfa/.mobile_menu.ext.php");
+if(array_intersect($getGroups, array(23))) include_once($_SERVER["DOCUMENT_ROOT"] . "/bilogco/.mobile_menu.ext.php");
+if(array_intersect($getGroups, array(25))) include_once($_SERVER["DOCUMENT_ROOT"] . "/nhe/.mobile_menu.ext.php");
+if(array_intersect($getGroups, array(27))) include_once($_SERVER["DOCUMENT_ROOT"] . "/auto/.mobile_menu.ext.php");
+if(array_intersect($getGroups, array(29))) include_once($_SERVER["DOCUMENT_ROOT"] . "/sdk/.mobile_menu.ext.php");
+
 
 $voximplantInstalled = false;
 if ($voximplantInstalled = Main\Loader::includeModule('voximplant'))
@@ -733,7 +728,7 @@ if ($voximplantInstalled = Main\Loader::includeModule('voximplant'))
 		"title" => GetMessage("MENU_TELEPHONY"),
 		"min_api_version" => 22,
 		"hidden" => !\Bitrix\Voximplant\Security\Helper::canCurrentUserPerformCalls(),
-		"sort" => 4,
+		"sort" => $menuSort,
 		"items" => [
 			[
 				"title" => Loc::getMessage("MENU_TELEPHONY_CALL"),
