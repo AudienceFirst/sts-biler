@@ -493,9 +493,18 @@ class CIntranetStructureListComponent extends CBitrixComponent
 		}
     
         // SUPPORT-1154
-        $this->arFilter['UF_DEPARTMENT'] = $this->departmentIdByUrl();
-        unset($this->arFilter['!UF_DEPARTMENT']);
-        unset($this->arFilter['!EXTERNAL_AUTH_ID']);
+		$this->arFilter['UF_DEPARTMENT'] = $this->departmentIdByUrl();
+
+		if(empty($this->arFilter['UF_DEPARTMENT'])) 
+			unset($this->arFilter['UF_DEPARTMENT']);
+		else
+		{
+			if ($this->arFilter['UF_DEPARTMENT'] > 0 && (!CModule::IncludeModule('extranet') || !CExtranet::IsExtranetSite()))
+				$this->arFilter['UF_DEPARTMENT'] = CIntranetUtils::GetIBlockSectionChildren(intval($this->arFilter['UF_DEPARTMENT']));
+		}
+
+		unset($this->arFilter['!UF_DEPARTMENT']);
+		unset($this->arFilter['!EXTERNAL_AUTH_ID']);
 
 		if(!$bFromCache)
 		{
@@ -558,6 +567,9 @@ class CIntranetStructureListComponent extends CBitrixComponent
 				}
 			}
 
+            // SUPPORT-1176; restrict departments displayed to only those under each division
+            $filteredDepartments = $this->arFilter['UF_DEPARTMENT'];
+
 			if ($bDisable)
 			{
 				$dbUsers = new CDBResult();
@@ -587,8 +599,9 @@ class CIntranetStructureListComponent extends CBitrixComponent
 			}
 
 			$structure = CIntranetUtils::getStructure();
-			$this->arResult['DEPARTMENTS'] = $structure['DATA']
-			;
+            
+			$this->arResult['DEPARTMENTS'] = $structure['DATA'];
+            
 			$this->setDepWhereUserIsHead();
 
 			$arAdmins = array();
@@ -657,11 +670,19 @@ class CIntranetStructureListComponent extends CBitrixComponent
 				$arUser['IS_FEATURED'] = CIntranetUtils::IsUserHonoured($arUser['ID']);
 
 				$arDep = array();
-				foreach ((array)$arUser['UF_DEPARTMENT'] as $sect)
-				{
+				
+                foreach ((array)$arUser['UF_DEPARTMENT'] as $sect) {
+
+                    // SUPPORT-1176; restrict departments displayed to only those under each division
+                    if (!in_array($sect, $filteredDepartments)) {
+                        continue;
+                    }
+
 					$arDep[$sect] = $this->arResult['DEPARTMENTS'][$sect]['NAME'];
 				}
+
 				$arUser['UF_DEPARTMENT'] = $arDep;
+
 				if(!$this->bExcel && $displayPhoto)
 				{
 					$this->resizePersonalPhoto($arUser);
@@ -933,7 +954,8 @@ class CIntranetStructureListComponent extends CBitrixComponent
 
     public function departmentIdByUrl()
     {
-        $department = 414; // ddb
+        // $department = null; // ddb
+        $department = 1; // ddb
 
         global $APPLICATION;
 
