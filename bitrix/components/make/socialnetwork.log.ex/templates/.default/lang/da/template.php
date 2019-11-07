@@ -1,0 +1,33 @@
+<?
+$MESS["SONET_C30_COMMENT_SUBMIT"] = "Send";
+$MESS["SONET_C30_COUNTER_TEXT_1"] = "Nye indlæg:";
+$MESS["SONET_C30_DIALOG_CANCEL_BUTTON"] = "Afbryd";
+$MESS["SONET_C30_DIALOG_CLOSE_BUTTON"] = "Luk";
+$MESS["SONET_C30_DIALOG_SUBMIT_BUTTON"] = "Gem";
+$MESS["SONET_C30_DIALOG_TRANSPORT_TITLE"] = "Notifikation:";
+$MESS["SONET_C30_INHERITED"] = "Standard";
+$MESS["SONET_C30_MENU_TITLE_CREATETASK"] = "Opret opgave";
+$MESS["SONET_C30_MENU_TITLE_DELETE"] = "Slet fra Aktivitetsstrøm";
+$MESS["SONET_C30_MENU_TITLE_DELETE_CONFIRM"] = "Er du sikker på, at du vil slette dette indlæg og alle de kommentarer, der er tilføjet til det?";
+$MESS["SONET_C30_MENU_TITLE_DELETE_FAILURE"] = "Fejl ved sletning af indlægget.";
+$MESS["SONET_C30_MENU_TITLE_DELETE_SUCCESS"] = "Indlægget er blevet slettet.";
+$MESS["SONET_C30_MENU_TITLE_FAVORITES_N"] = "Tilføj til favoritter";
+$MESS["SONET_C30_MENU_TITLE_FAVORITES_Y"] = "Fjern fra favoritter";
+$MESS["SONET_C30_MENU_TITLE_HREF"] = "Åben besked";
+$MESS["SONET_C30_MENU_TITLE_LINK"] = "Besked link";
+$MESS["SONET_C30_MENU_TITLE_LINK2"] = "Kopier link";
+$MESS["SONET_C30_MENU_TITLE_TRANSPORT"] = "Beskeder";
+$MESS["SONET_C30_MORE"] = "Flere Begivenheder";
+$MESS["SONET_C30_NO_SUBSCRIPTIONS"] = "Ingen abonnementer tilgængelige";
+$MESS["SONET_C30_T_EMPTY"] = "Der er ingen indlæg i Aktivitetsstrømmen";
+$MESS["SONET_C30_T_EMPTY_SEARCH"] = "Intet fundet";
+$MESS["SONET_C30_T_LINK_COPIED"] = "Link kopieret";
+$MESS["SONET_C30_T_MESSAGE_EXPAND"] = "Udvid";
+$MESS["SONET_C30_T_MESSAGE_HIDE"] = "skjul";
+$MESS["SONET_C30_T_MESSAGE_SHOW"] = "vis";
+$MESS["SONET_C30_T_MORE_WAIT"] = "Indlæser...";
+$MESS["SONET_C30_T_RELOAD_ERROR"] = "Fejl ved opdatering af Aktivitetsstrøm";
+$MESS["SONET_C30_T_RELOAD_NEEDED"] = "Genindlæs Aktivitetsstrømmen";
+$MESS["SONET_C30_T_USER"] = "Bruger";
+$MESS["SONET_ERROR_SESSION"] = "Din session er udløbet. Venligst opret din kommentar igen.";
+?>
