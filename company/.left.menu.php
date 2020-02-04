@@ -1,0 +1,32 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Organisationsplan", 
+		"/company/vis_structure.php", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Find Medarbejder", 
+		"/company/index.php", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Telefonliste", 
+		"/company/telephones.php", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Fødselsdage", 
+		"/company/birthdays.php", 
+		Array(), 
+		Array(), 
+		"" 
+	)
+);
+?>
