@@ -11,11 +11,6 @@ if (!function_exists('__MSLLogGetIds'))
         unset($arFilter['LOG_RIGHTS']);
         unset($arFilter['LOG_RIGHTS_SG']);
 
-        // var_dump(__LINE__);
-        // echo '<pre>$arFilter is ';
-        // print_r($arFilter);
-        // echo '</pre>';
-
 		$dbEventsID = CSocNetLog::GetList(
 			$arOrder,
 			$arFilter,

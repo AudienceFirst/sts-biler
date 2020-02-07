@@ -26,9 +26,7 @@ if (!function_exists('__SLLogGetIds'))
 		&$arResult, &$arActivity2Log, &$arDiskUFEntity, &$arTmpEventsNew
 	)
 	{   
-        // echo '<pre>$arFilter is ';
-        // print_r($arFilter);
-        // echo '</pre>';
+        
 		$dbEventsID = CSocNetLog::GetList(
 			$arOrder,
 			$arFilter,

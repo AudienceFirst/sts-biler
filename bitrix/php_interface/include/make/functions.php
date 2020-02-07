@@ -65,3 +65,59 @@ function userBlogGroupId()
 
     return $group;
 }
+
+function userSiteByGroupId($group)
+{
+    $group = intval($group);
+
+    switch ($group) {
+
+        // sts
+        case 17:
+            $site = 'mh';
+            break;
+
+
+        // era
+        case 19:
+            $site = 'lb';
+            break;
+
+
+        // mfa
+        case 21:
+            $site = 'py';
+            break;
+
+
+        // bilogco
+        case 23:
+            $site = 'rc';
+            break;
+
+
+        // nhe
+        case 25:
+            $site = 'jf';
+            break;
+
+
+        // autohallen
+        case 27:
+            $site = 'ku';
+            break;
+
+        // sdk
+        case 29:
+            $site = 'qy';
+            break;
+            
+        // ddb
+        case 12:
+        // default:
+            $site = 's1';
+            break;
+    }
+
+    return $site;
+}
