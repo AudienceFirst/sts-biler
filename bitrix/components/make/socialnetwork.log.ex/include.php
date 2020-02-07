@@ -26,6 +26,7 @@ if (!function_exists('__SLLogGetIds'))
 		&$arResult, &$arActivity2Log, &$arDiskUFEntity, &$arTmpEventsNew
 	)
 	{   
+        
 		$dbEventsID = CSocNetLog::GetList(
 			$arOrder,
 			$arFilter,
@@ -48,6 +49,9 @@ if (!function_exists('__SLLogGetIds'))
 			$arResult["PAGE_NAVNUM"] = $dbEventsID->NavNum;
 			$arResult["PAGE_NAVCOUNT"] = $dbEventsID->NavPageCount;
 		}
+
+        // var_dump(__LINE__);
+        // var_dump($dbEventsID->SelectedRowsCount());
 
 		$cnt = 0;
 		while ($arEventsID = $dbEventsID->getNext())

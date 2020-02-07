@@ -3,6 +3,7 @@ define("BX_MOBILE_LOG", true);
 
 require($_SERVER["DOCUMENT_ROOT"]."/mobile/headers.php");
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+
 AddEventHandler("blog", "BlogImageSize", "ResizeMobileLogImages", 100, $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/components/bitrix/socialnetwork.blog.post/mobile/functions.php");
 
 \Bitrix\Main\Data\AppCacheManifest::getInstance()->setExcludeImagePatterns(
@@ -148,15 +149,15 @@ elseif ($_GET["blog"] == "Y")
 {
 	$filter = "blog";
 }
-// var_dump($filter);
-// exit();
+
 // get blog group ID based on user's usergroup
 $groupId = userBlogGroupId();
+
 ?>
 <?$APPLICATION->IncludeComponent("make:mobile.socialnetwork.log.ex", ".default", array(
 		// "GROUP_ID" => intval($_GET["group_id"]),
-        // "GROUP_ID" => $_GET["group_id"] ?? $groupId,
-        "GROUP_ID" => $groupId,
+        "GROUP_ID" => $_GET["group_id"] ?? $groupId,
+        // "GROUP_ID" => $groupId,
 		"LOG_ID" => intval($_GET["detail_log_id"]),
 		"FAVORITES" => ($_GET["favorites"] == "Y" ? "Y" : "N"),
 		"FILTER" => $filter,

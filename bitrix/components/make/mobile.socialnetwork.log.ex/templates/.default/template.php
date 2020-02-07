@@ -12,9 +12,10 @@ use \Bitrix\Main\Loader;
 use \Bitrix\Main\UI;
 
 // exit('here');
+//echo CUtil::JSEscape($arResult["GROUP_NAME"]);
 
-$APPLICATION->AddHeadScript("/bitrix/components/bitrix/mobile.socialnetwork.log.ex/templates/.default/mobile_files.js");
-$APPLICATION->AddHeadScript("/bitrix/components/bitrix/mobile.socialnetwork.log.ex/templates/.default/script_attached.js");
+$APPLICATION->AddHeadScript("/bitrix/components/make/mobile.socialnetwork.log.ex/templates/.default/mobile_files.js");
+$APPLICATION->AddHeadScript("/bitrix/components/make/mobile.socialnetwork.log.ex/templates/.default/script_attached.js");
 $APPLICATION->AddHeadScript("/bitrix/components/bitrix/rating.vote/templates/mobile_comment_like/script_attached.js");
 $APPLICATION->AddHeadScript("/bitrix/js/main/rating_like.js");
 $APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH."/components/bitrix/voting.current/.userfield/script.js");

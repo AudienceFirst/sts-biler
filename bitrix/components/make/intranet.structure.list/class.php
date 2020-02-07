@@ -493,9 +493,19 @@ class CIntranetStructureListComponent extends CBitrixComponent
 		}
     
         // SUPPORT-1154
-        $this->arFilter['UF_DEPARTMENT'] = $this->departmentIdByUrl();
-        unset($this->arFilter['!UF_DEPARTMENT']);
-        unset($this->arFilter['!EXTERNAL_AUTH_ID']);
+		$this->arFilter['UF_DEPARTMENT'] = $this->departmentIdByUrl();
+		if(empty($this->arFilter['UF_DEPARTMENT'])) 
+			unset($this->arFilter['UF_DEPARTMENT']);
+		else
+		{
+			if ($this->arFilter['UF_DEPARTMENT'] > 0 && (!CModule::IncludeModule('extranet') || !CExtranet::IsExtranetSite()))
+				$this->arFilter['UF_DEPARTMENT'] = CIntranetUtils::GetIBlockSectionChildren(intval($this->arFilter['UF_DEPARTMENT']));
+		}
+		
+
+		unset($this->arFilter['!UF_DEPARTMENT']);
+		unset($this->arFilter['!EXTERNAL_AUTH_ID']);
+
 
 		if(!$bFromCache)
 		{
@@ -933,7 +943,7 @@ class CIntranetStructureListComponent extends CBitrixComponent
 
     public function departmentIdByUrl()
     {
-        $department = 414; // ddb
+        $department = null; // ddb
 
         global $APPLICATION;
 

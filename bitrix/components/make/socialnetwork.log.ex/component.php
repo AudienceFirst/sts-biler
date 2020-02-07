@@ -16,7 +16,7 @@ global $CACHE_MANAGER, $USER_FIELD_MANAGER;
 use Bitrix\Main\Loader;
 use \Bitrix\Socialnetwork\UserToGroupTable;
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/components/bitrix/socialnetwork.log.ex/include.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/components/make/socialnetwork.log.ex/include.php");
 
 CPageOption::SetOptionString("main", "nav_page_in_session", "N");
 
@@ -1662,7 +1662,7 @@ if (
     $sites[] = false;
     
     // $arFilter['SITE_ID'][0] = 'mh';
-    $arFilter['SITE_ID'] = $sites;
+    // $arFilter['SITE_ID'] = $sites;
 
 	$dbEventsID = __SLLogGetIds(
 		$arOrder, $arFilter, $arNavStartParams, $arSelectFields, $arListParams, $bFirstPage,
