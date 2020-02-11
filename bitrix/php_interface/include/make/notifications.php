@@ -2,7 +2,7 @@
 define("BIRTHDAY_TEMPLATE_ID", 462);
 define("ANNIVERSARY_TEMPLATE_ID", 454);
 
-#function trigger by bitrix agents
+//function trigger by bitrix agents
 function activateEmployeeNotification()
 {
     GLOBAL $USER;
@@ -90,9 +90,16 @@ class EmployeeNotification
             53, // MFA
             56, // Autohallen
         ];
-        
-        $strSql = "SELECT U.ID FROM b_user U JOIN b_uts_user UTS ON U.ID = UTS.VALUE_ID WHERE DATE_FORMAT(U.PERSONAL_BIRTHDAY,'%m-%d') = DATE_FORMAT(NOW(),'%m-%d') OR  DATE_FORMAT(UTS.UF_WORK_START,'%m-%d') = DATE_FORMAT(NOW(),'%m-%d')";
+
+        //$strSql = "SELECT U.ID FROM b_user U JOIN b_uts_user UTS ON U.ID = UTS.VALUE_ID WHERE DATE_FORMAT(U.PERSONAL_BIRTHDAY,'%m-%d') = DATE_FORMAT(NOW(),'%m-%d') OR  DATE_FORMAT(UTS.UF_WORK_START,'%m-%d') = DATE_FORMAT(NOW(),'%m-%d')";
+
+        $strSql = 'SELECT U.ID FROM b_user U '
+        . ' JOIN b_uts_user UTS ON U.ID = UTS.VALUE_ID '
+        . ' WHERE (DATE_FORMAT(U.PERSONAL_BIRTHDAY,"%m-%d") = DATE_FORMAT(NOW(),"%m-%d") '
+        . ' OR  DATE_FORMAT(UTS.UF_WORK_START,"%m-%d") = DATE_FORMAT(NOW(),"%m-%d")) AND U.ACTIVE="Y"';
+
         $res = $DB->Query($strSql, false, $err_mess. __LINE__ );
+
 
         $arElements = array();
         while ($arRes = $res->Fetch())
