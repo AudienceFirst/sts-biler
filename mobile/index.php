@@ -153,8 +153,23 @@ elseif ($_GET["blog"] == "Y")
 // get blog group ID based on user's usergroup
 $groupId = userBlogGroupId();
 
+$loadDefault = false;
+
+// check if workgroup stream is being loaded
+$workgroupId = !empty($_REQUEST['group_id']) ? $_REQUEST['group_id'] : 0;
+if ($workgroupId) {
+    CModule::IncludeModule("socialnetwork");
+    
+    if ($socnetGroup = CSocNetGroup::getById($workgroupId))
+        $loadDefault = true;
+
+}
+
+$component = 'make:mobile.socialnetwork.log.ex';
+// if ($loadDefault)
+//     $component = 'bitrix:mobile.socialnetwork.log.ex';
 ?>
-<?$APPLICATION->IncludeComponent("make:mobile.socialnetwork.log.ex", ".default", array(
+<?$APPLICATION->IncludeComponent($component, ".default", array(
 		// "GROUP_ID" => intval($_GET["group_id"]),
         "GROUP_ID" => $_GET["group_id"] ?? $groupId,
         // "GROUP_ID" => $groupId,
