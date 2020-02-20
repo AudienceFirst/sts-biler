@@ -71,7 +71,7 @@
 			this.request = new RequestExecutor("user.search",
 				{
 					"IMAGE_RESIZE": "small",
-					"SORT": "LAST_NAME",
+					"SORT": "NAME",
 					"ORDER": "ASC",
 					"FILTER": {"ACTIVE": "Y", "HAS_DEPARTAMENT": "Y"}
 				})
@@ -378,7 +378,7 @@
 		{
 			this.searchRequest = new DelayedRestRequest("user.search",
 				{
-					"SORT": "LAST_NAME",
+					"SORT": "NAME",
 					"ORDER": "ASC",
 					"FILTER": {"ACTIVE": "Y", "HAS_DEPARTAMENT": "Y"}
 				});
@@ -597,7 +597,7 @@
 				useLetterImage: true,
 				imageUrl: (user.PERSONAL_PHOTO === null ? undefined : encodeURI(user.PERSONAL_PHOTO)),
 				sortValues: {
-					name: user.LAST_NAME
+					name: user.NAME
 				},
 				params: {
 					id: user.ID,
