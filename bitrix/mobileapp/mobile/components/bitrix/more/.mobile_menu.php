@@ -247,7 +247,7 @@ JS
         [
             "imageUrl" => $imageDir . "favorite/icon-users.png",
             "color" => "#AF9245",
-            "title" => Loc::getMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY"),
+			"title" => Loc::getMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY"),
             "attrs" => [
                 "onclick" => <<<JS
                         if(Application.getApiVersion() >= 22)
@@ -904,14 +904,14 @@ if (CModule::IncludeModule("socialnetwork"))
     $arGroupIDCurrentSite = [];
 
     // Socialnetwork
-    //$arGroupFilterMy["GROUP_SITE_ID"] = SITE_ID;
+	//$arGroupFilterMy["GROUP_SITE_ID"] = SITE_ID;
 
-    $rsSites = CSite::GetList($by, $order, Array("ACTIVE" => "Y"));
-    $arr_site = [];
-    while ($arSite = $rsSites->Fetch()) {
-        $arr_site[] = $arSite['LID'];
-    }
-    $arGroupFilterMy["GROUP_SITE_ID"] = $arr_site;
+	$rsSites = CSite::GetList($by, $order, Array("ACTIVE" => "Y"));
+	$arr_site = [];
+	while ($arSite = $rsSites->Fetch()) {
+		$arr_site[] = $arSite['LID'];
+	}
+	$arGroupFilterMy["GROUP_SITE_ID"] = $arr_site;
     $dbGroups = CSocNetUserToGroup::GetList(
         ["GROUP_NAME" => "ASC"],
         $arGroupFilterMy,
@@ -973,7 +973,7 @@ if (CModule::IncludeModule("socialnetwork"))
 if (!empty($groups) || !empty($extranetGroups))
 {
     $groupSection = [
-        "title" => Loc::getMessage("MB_SEC_GROUPS"),
+		"title" => Loc::getMessage("MB_SEC_GROUPS"),
         "sort" => 130,
         "hidden" => false,
         "items" => [],
@@ -997,7 +997,7 @@ if (!empty($groups) || !empty($extranetGroups))
         ];
     }
 
-    $menuStructure[] = $groupSection;
+	$menuStructure[] = $groupSection;
 
 
 }
