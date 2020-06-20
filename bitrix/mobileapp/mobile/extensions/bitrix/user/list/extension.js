@@ -76,7 +76,8 @@
 			this.request = new RequestExecutor("user.search",
 				{
 					"IMAGE_RESIZE": "small",
-					"SORT": "LAST_NAME",
+					// "SORT": "LAST_NAME",
+                    "SORT": "NAME",
 					"ORDER": "ASC",
 					"FILTER": {"ACTIVE": "Y", "HAS_DEPARTAMENT": "Y"}
 				})
@@ -393,7 +394,8 @@
 		{
 			this.searchRequest = new DelayedRestRequest("user.search",
 				{
-					"SORT": "LAST_NAME",
+					// "SORT": "LAST_NAME",
+                    "SORT": "NAME",
 					"ORDER": "ASC",
 					"FILTER": {"ACTIVE": "Y", "HAS_DEPARTAMENT": "Y"}
 				});
@@ -616,7 +618,8 @@
 				useLetterImage: true,
 				imageUrl: (user.PERSONAL_PHOTO === null ? undefined : encodeURI(user.PERSONAL_PHOTO)),
 				sortValues: {
-					name: user.LAST_NAME
+					// name: user.LAST_NAME
+                    name: user.NAME
 				},
 				params: {
 					id: user.ID,
@@ -633,6 +636,9 @@
 					.filter(user => user["UF_DEPARTMENT"] !== false && !Utils.getFormattedHumanName(user))
 					.map(userFormatFunction)
 					.sort((u1, u2) => u1.title > u2.title ? 1 : (u1.title === u2.title ? 0 : -1));
+
+                console.log(unknownUsers);
+                
 				result = unknownUsers.concat(result);
 			}
 
