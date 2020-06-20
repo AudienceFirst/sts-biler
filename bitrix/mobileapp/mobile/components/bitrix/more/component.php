@@ -1,7 +1,13 @@
 <?
 
 use Bitrix\Main\Application;
+use Bitrix\Main\Config\Option;
+use Bitrix\Main\Engine\CurrentUser;
+use Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
+use Bitrix\Socialnetwork\Controller\User\StressLevel;
+use Bitrix\Socialnetwork\Item\UserWelltory;
+use Bitrix\Intranet\Invitation;
 
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
 {
@@ -12,6 +18,8 @@ global $USER, $CACHE_MANAGER;
 
 CModule::IncludeModule("mobile");
 CModule::IncludeModule("mobileapp");
+
+Loc::loadMessages(__DIR__ . '/.mobile_menu.php');
 
 function sortMenu($item, $anotherItem)
 {
@@ -30,13 +38,42 @@ function sortMenu($item, $anotherItem)
 	return -1;
 }
 
+$isExtranetUser = (\CModule::includeModule("extranet") && !\CExtranet::isIntranetUser());
+
+$canInviteUsers = (
+	Loader::includeModule('intranet')
+	&& Invitation::canCurrentUserInvite()
+);
+
+$registerUrl = (
+	$canInviteUsers
+		? Invitation::getRegisterUrl()
+		: ''
+);
+
+$registerAdminConfirm = (
+	$canInviteUsers
+		? Invitation::getRegisterAdminConfirm()
+		: false
+);
+
+$disableRegisterAdminConfirm = !Invitation::canListDelete();
+
+$registerSharingMessage = (
+	$canInviteUsers
+		? Invitation::getRegisterSharingMessage()
+		: ''
+);
+
+$rootStructureSectionId = Invitation::getRootStructureSectionId();
+
 $userId = $USER->getId();
 $arResult = [];
 $ttl = (defined("BX_COMP_MANAGED_CACHE") ? 2592000 : 600);
 $extEnabled = IsModuleInstalled('extranet');
 $menuSavedModificationTime = \Bitrix\Main\Config\Option::get("mobile", "jscomponent.menu.date.modified.user_" . $userId, 0);
 $menuFile = new \Bitrix\Main\IO\File($this->path . ".mobile_menu.php");
-$version = \Bitrix\MobileApp\Janative\Manager::getComponentVersion("more");
+$version = $this->getVersion();
 $menuModificationTime = $menuFile->getModificationTime();
 $cacheIsActual = ($menuModificationTime == $menuSavedModificationTime);
 if (!$cacheIsActual)
@@ -46,16 +83,16 @@ if (!$cacheIsActual)
 	\Bitrix\Main\Config\Option::set("mobile", "jscomponent.menu.date.modified.user_" . $userId, $menuModificationTime);
 }
 
-$cache_id = 'custom_user_mobile_menu_' . $userId . '_' . $extEnabled . '_' . LANGUAGE_ID . '_' . CSite::GetNameFormat(false) . "ver" . $version . "_" . $apiVersion;
-$cache_dir = '/bx/mobile_component/more/custom_user_' . $userId;
+$cache_id = 'user_mobile_menu_' . $userId . '_' . $extEnabled . '_' . LANGUAGE_ID . '_' . CSite::GetNameFormat(false) . "ver" . $version . "_" . $apiVersion;
+$cache_dir = '/bx/mobile_component/more/user_' . $userId;
 $obCache = new CPHPCache;
 
-// if ($obCache->InitCache($ttl, $cache_id, $cache_dir))
-// {
-// 	$arResult = $obCache->GetVars();
-// }
-// else
-// {
+if ($obCache->InitCache($ttl, $cache_id, $cache_dir))
+{
+	$arResult = $obCache->GetVars();
+}
+else
+{
 	$CACHE_MANAGER->StartTagCache($cache_dir);
 	$arResult = include(".mobile_menu.php");
 	$host = Bitrix\Main\Context::getCurrent()->getServer()->getHttpHost();
@@ -83,11 +120,11 @@ $obCache = new CPHPCache;
 	$CACHE_MANAGER->RegisterTag('crm_change_role');
 	$CACHE_MANAGER->EndTagCache();
 
-	// if ($obCache->StartDataCache())
-	// {
-	// 	$obCache->EndDataCache($arResult);
-	// }
-//}
+	if ($obCache->StartDataCache())
+	{
+		$obCache->EndDataCache($arResult);
+	}
+}
 
 $events = \Bitrix\Main\EventManager::getInstance()->findEventHandlers("mobile", "onMobileMenuStructureBuilt");
 if (count($events) > 0)
@@ -207,6 +244,96 @@ JS
 ];
 
 $counterList = [];
+$isStressLevelTurnOn = Option::get('intranet', 'stresslevel_available', 'Y') == 'Y';
+$showStressItemCondition =(!Loader::includeModule('bitrix24') || \Bitrix\Bitrix24\Release::isAvailable('stresslevel')) && $isStressLevelTurnOn ;
+$arResult["releaseStressLevel"] = $showStressItemCondition;
+if(Loader::includeModule('socialnetwork') && $showStressItemCondition)
+{
+	$favoriteSection = &$arResult["menu"][0];
+	$colors = [
+		"green" => "#9DCF00",
+		"yellow" => "#F7A700",
+		"red" => "#FF5752",
+		"unknown" => "#C8CBCE"
+	];
+
+	$stressValue = false;
+	$stressColor = $colors["unknown"];
+
+	$stressItem = [
+		"title" => Loc::getMessage("MB_BP_MAIN_STRESS_LEVEL"),
+		"id" => "stress",
+		"min_api_version" => 31,
+		"imageUrl" => $this->getPath() . "/images/favorite/icon-stress.png?1",
+		"color" => "#55D0E0",
+		"hidden"=>\Bitrix\MobileApp\Mobile::$apiVersion < 31,
+		"attrs" => [
+			"id" => "stress",
+			"onclick"=>""
+		]
+
+	];
+
+
+	$data = UserWelltory::getHistoricData([
+		'userId' => $USER->getId(),
+		'limit' => 1
+	]);
+
+	if (!empty($data))
+	{
+		$result = $data[0];
+		$initStressResult = \Bitrix\MobileApp\Janative\Utils::jsonEncode([
+			"value"=>$result["value"],
+			"type"=>$result["type"],
+			"comment"=>$result["comment"],
+			"token"=>$result["hash"],
+			"date"=>$result["date"]
+		]);
+
+		$stressItem["styles"] = ["tag"=>["backgroundColor"=>$colors[$result["type"]] , "cornerRadius"=>15]];
+		$stressItem["tag"] = $result["value"]."%";
+		$stressItem["initData"] = $initStressResult;
+		$onclick = <<<JS
+			if(typeof window.version  === "undefined" || window.version < 1.0)
+			{
+				reload();
+			}
+			else 
+			{
+				let initResult = $initStressResult;
+				if(initResult["value"])
+					{
+						initResult["date"] = new Date(initResult["date"]).toLocaleString();
+					}
+				else
+					initResult = null;
+				
+				openStressWidget(initResult, false);
+			}
+JS;
+
+	}
+	else
+	{
+		$stressItem["styles"] = ["tag"=>["backgroundColor"=>"#3BC8F5" , "cornerRadius"=>5]];
+		$stressItem["tag"] = Loc::getMessage("MEASURE_STRESS");
+		$onclick = <<<JS
+			if(typeof window.version  === "undefined" || window.version < 1.0)
+			{
+				reload();
+			}
+			else 
+			{
+				openStressWidget(null, false);
+			}
+JS;
+	}
+
+	$stressItem["attrs"]["onclick"] = $onclick;
+
+	array_unshift($favoriteSection["items"], $stressItem);
+}
 
 usort($arResult["menu"], 'sortMenu');
 
@@ -266,8 +393,17 @@ array_walk($arResult["menu"], function (&$section) use (&$counterList) {
 	}
 });
 
-
-$arResult["counterList"] = $counterList;
+$arResult = array_merge($arResult, [
+	"counterList" => $counterList,
+	"invite" => [
+		"canInviteUsers" => $canInviteUsers,
+		"registerUrl" => $registerUrl,
+		"registerAdminConfirm" => $registerAdminConfirm,
+		"disableRegisterAdminConfirm" => $disableRegisterAdminConfirm,
+		"registerSharingMessage" => $registerSharingMessage,
+		"rootStructureSectionId" => $rootStructureSectionId
+	]
+]);
 
 unset($obCache);
 
