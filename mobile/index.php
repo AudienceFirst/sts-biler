@@ -183,7 +183,7 @@ $groupId = userBlogGroupId();
 $loadDefault = false;
 
 // check if workgroup stream is being loaded
-$workgroupId = !empty($_REQUEST['group_id']) ? $_REQUEST['group_id'] : 0;
+$workgroupId = $_REQUEST['group_id'] ?? 0;
 if ($workgroupId) {
     CModule::IncludeModule("socialnetwork");
     
@@ -195,10 +195,11 @@ if ($workgroupId) {
 $component = 'make:mobile.socialnetwork.log.ex';
 // if ($loadDefault)
 //     $component = 'bitrix:mobile.socialnetwork.log.ex';
-
-?><?$APPLICATION->IncludeComponent($component, ".default", array(
+?>
+<?$APPLICATION->IncludeComponent($component, ".default", array(
         // "GROUP_ID" => intval($_GET["group_id"]),
-        "GROUP_ID" => $workgroupId ? $workgroupId : $groupId,
+        "GROUP_ID" => $_GET["group_id"] ?? $groupId,
+        // "GROUP_ID" => $groupId,
         "LOG_ID" => intval($_GET["detail_log_id"]),
         "FAVORITES" => ($_GET["favorites"] == "Y" ? "Y" : "N"),
         "FILTER" => $filter,
