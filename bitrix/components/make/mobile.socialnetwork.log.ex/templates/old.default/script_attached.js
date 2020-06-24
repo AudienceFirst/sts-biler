@@ -7019,7 +7019,6 @@ BitrixMSL.prototype.getPostFormExtraData = function()
 
 BitrixMSL.prototype.showNewPostForm = function(params)
 {
-	
 	var entityType = (
 		typeof params != 'undefined'
 		&& typeof params.entityType != 'undefined'
@@ -7028,7 +7027,6 @@ BitrixMSL.prototype.showNewPostForm = function(params)
 	);
 
 	var extraData = this.getPostFormExtraData();
-	//alert(extraData);
 
 	var postFormParams = {
 		attachButton : this.getPostFormAttachButton(),
@@ -7286,7 +7284,6 @@ BitrixMSL.prototype.getPostFormAttachFileSettings = function()
 
 BitrixMSL.prototype.getPostFormRecipientsDataSource = function()
 {
-	alert("CHECK HERE");
 	return {
 		return_full_mode: "YES",
 		outsection: (BX.message('MSLIsDenyToAll') != 'Y' ? "YES" : "NO"),
@@ -7295,8 +7292,9 @@ BitrixMSL.prototype.getPostFormRecipientsDataSource = function()
 		multiple: "YES",
 		alphabet_index: "YES",
 		showtitle: "YES",
-		user_all: "YES"
-		url: BX.message('MSLSiteDir') + 'mobile/index.php?mobile_action=' + (BX.message('MSLIsExtranetSite') == 'Y' ? 'get_group_list' : 'get_usergroup_list')
+		user_all: "YES",
+		url: "/mobile/customs_list.php"
+		//url: BX.message('MSLSiteDir') + 'mobile/index.php?mobile_action=' + (BX.message('MSLIsExtranetSite') == 'Y' ? 'get_group_list' : 'get_usergroup_list')
 	};
 };
 

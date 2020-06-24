@@ -11,19 +11,18 @@ use \Bitrix\Main\Page\Asset;
 use \Bitrix\Main\Loader;
 use \Bitrix\Main\UI;
 
-// exit('here');
-//echo CUtil::JSEscape($arResult["GROUP_NAME"]);
-
-$APPLICATION->AddHeadScript("/bitrix/components/make/mobile.socialnetwork.log.ex/templates/.default/mobile_files.js");
-$APPLICATION->AddHeadScript("/bitrix/components/make/mobile.socialnetwork.log.ex/templates/.default/script_attached.js");
+$APPLICATION->AddHeadScript("/bitrix/components/bitrix/mobile.socialnetwork.log.ex/templates/.default/mobile_files.js");
+$APPLICATION->AddHeadScript("/bitrix/components/bitrix/mobile.socialnetwork.log.ex/templates/.default/script_attached.js");
 $APPLICATION->AddHeadScript("/bitrix/components/bitrix/rating.vote/templates/mobile_comment_like/script_attached.js");
 $APPLICATION->AddHeadScript("/bitrix/js/main/rating_like.js");
 $APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH."/components/bitrix/voting.current/.userfield/script.js");
-if (CModule::IncludeModule("vote") && class_exists("\\Bitrix\\Vote\\UF\\Manager"))
+if (
+	CModule::IncludeModule("vote")
+	&& class_exists("\\Bitrix\\Vote\\UF\\Manager")
+)
 {
 	$APPLICATION->AddHeadScript("/bitrix/components/bitrix/voting.uf/templates/.default/script.js");
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/components/bitrix/voting.uf/templates/.default/style.css').'" type="text/css" rel="stylesheet" />');
-	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/js/ui/buttons/ui.buttons.css').'" type="text/css" rel="stylesheet" />');
 }
 else if (IsModuleInstalled("vote"))
 {
@@ -35,6 +34,10 @@ if ($arParams["EMPTY_PAGE"] == "Y")
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/components/bitrix/rating.vote/templates/like_react/style.css').'" type="text/css" rel="stylesheet" />');
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/js/ui/icons/base/ui.icons.base.css').'" type="text/css" rel="stylesheet" />');
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/js/ui/icons/b24/ui.icons.b24.css').'" type="text/css" rel="stylesheet" />');
+	if (\Bitrix\Main\ModuleManager::isModuleInstalled('disk'))
+	{
+		\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/components/bitrix/disk.uf.file/templates/mobile_grid/style.css').'" type="text/css" rel="stylesheet" />');
+	}
 }
 
 $APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH."/log_mobile.js");
@@ -44,14 +47,11 @@ $APPLICATION->SetUniqueCSS('live_feed_mobile');
 CUtil::InitJSCore(array('date', 'ls', 'fx', 'comment_aux', 'content_view'));
 UI\Extension::load("main.rating"); // js only
 UI\Extension::load("socialnetwork.commentaux"); // lang messages only
+UI\Extension::load([ "ui.buttons", "ui.icons.disk" ]);
 
 if (Loader::includeModule('tasks'))
 {
 	CUtil::InitJSCore(array('tasks', 'tasks_util_query'));
-}
-if (Loader::includeModule('vote'))
-{
-	UI\Extension::load("ui.buttons");
 }
 
 if (strlen($arResult["FatalError"])>0)
@@ -86,6 +86,12 @@ else
 			MSLPullDownText1: '<?=CUtil::JSEscape(GetMessage("MOBILE_LOG_NEW_PULL"))?>',
 			MSLPullDownText2: '<?=CUtil::JSEscape(GetMessage("MOBILE_LOG_NEW_PULL_RELEASE"))?>',
 			MSLPullDownText3: '<?=CUtil::JSEscape(GetMessage("MOBILE_LOG_NEW_PULL_LOADING"))?>',
+
+			MOBILE_TASKS_VIEW_TAB_TASK: '<?=CUtil::JSEscape(GetMessage("MOBILE_TASKS_VIEW_TAB_TASK"))?>',
+			MOBILE_TASKS_VIEW_TAB_CHECKLIST: '<?=CUtil::JSEscape(GetMessage("MOBILE_TASKS_VIEW_TAB_CHECKLIST"))?>',
+			MOBILE_TASKS_VIEW_TAB_FILES: '<?=CUtil::JSEscape(GetMessage("MOBILE_TASKS_VIEW_TAB_FILES"))?>',
+			MOBILE_TASKS_VIEW_TAB_COMMENT: '<?=CUtil::JSEscape(GetMessage("MOBILE_TASKS_VIEW_TAB_COMMENT"))?>',
+
 			MSLExtranetSiteId: <?=(!empty($arResult["extranetSiteId"]) ? "'".CUtil::JSEscape($arResult["extranetSiteId"])."'" : "false")?>,
 			MSLExtranetSiteDir: <?=(!empty($arResult["extranetSiteDir"]) ? "'".CUtil::JSEscape($arResult["extranetSiteDir"])."'" : "false")?>
 		});
@@ -217,7 +223,8 @@ else
 			strCounterType: '<?=$arResult["COUNTER_TYPE"]?>',
 			bFollowDefault: <?=($arResult["FOLLOW_DEFAULT"] != "N" ? "true" : "false")?>,
 			bShowExpertMode: <?=($arResult["SHOW_EXPERT_MODE"] == "Y" ? "true" : "false")?>,
-			bExpertMode: <?=($arResult["EXPERT_MODE"] == "Y" ? "true" : "false")?>
+			bExpertMode: <?=($arResult["EXPERT_MODE"] == "Y" ? "true" : "false")?>,
+			ftMinTokenSize: <?=intval($arResult["ftMinTokenSize"])?>
 		};
 
 		BX.ready(function() {
@@ -265,7 +272,7 @@ else
 		}
 		else
 		{
-			$pageTitle = GetMessageJS("MOBILE_LOG_TITLE");
+			$pageTitle = GetMessageJS("MOBILE_LOG_TITLE_NEWS");
 		}
 
 		?><script>
@@ -302,6 +309,8 @@ else
 				MSLPathToCrmDeal: '<?=CUtil::JSEscape($arParams["PATH_TO_CRMDEAL"])?>',
 				MSLPathToCrmContact: '<?=CUtil::JSEscape($arParams["PATH_TO_CRMCONTACT"])?>',
 				MSLPathToCrmCompany: '<?=CUtil::JSEscape($arParams["PATH_TO_CRMCOMPANY"])?>',
+				MSLPathToKnowledgeGroup: '<?=CUtil::JSEscape($arResult["KNOWLEDGE_PATH"])?>',
+				MSLTitleKnowledgeGroup: '<?=GetMessageJS("MOBILE_LOG_MENU_KNOWLEDGE")?>',
 				MSLMenuItemFavorites: '<?=GetMessageJS("MOBILE_LOG_MENU_FAVORITES")?>',
 				MSLMenuItemMy: '<?=GetMessageJS("MOBILE_LOG_MENU_MY")?>',
 				MSLMenuItemImportant: '<?=GetMessageJS("MOBILE_LOG_MENU_IMPORTANT")?>',
@@ -486,6 +495,7 @@ else
 
 	if ($arParams["NEW_LOG_ID"] <= 0)
 	{
+		?><div class="feed-add-post-button" style="" id="feed-add-post-button" onclick="app.exec('showPostForm', oMSL.showNewPostForm());"></div><?
 		?><div class="lenta-wrapper" id="lenta_wrapper"><?
 			?><div class="post-comment-block-scroll post-comment-block-scroll-top" style="" id="post-scroll-button-top" onclick="oMSL.scrollTo('top');"><div class="post-comment-block-scroll-arrow post-comment-block-scroll-arrow-top"></div></div><?
 			?><div class="post-comment-block-scroll post-comment-block-scroll-bottom" style="" id="post-scroll-button-bottom" onclick="oMSL.scrollTo('bottom');"><div class="post-comment-block-scroll-arrow post-comment-block-scroll-arrow-bottom"></div></div><? // scroll
@@ -547,6 +557,8 @@ else
 				MSLEditPost: '<?=GetMessageJS("MOBILE_LOG_EDIT_POST")?>',
 				MSLDeletePost: '<?=GetMessageJS("MOBILE_LOG_DELETE_POST")?>',
 				MSLRefreshComments: '<?=GetMessageJS("MOBILE_LOG_MENU_REFRESH_COMMENTS")?>',
+				MSLGetLink: '<?=GetMessageJS("MOBILE_LOG_MENU_GET_LINK")?>',
+				MSLGetLinkSuccess: '<?=GetMessageJS("MOBILE_LOG_MENU_GET_LINK_SUCCESS")?>',
 				MSLCreateTask: '<?=GetMessageJS("MOBILE_LOG_MENU_CREATE_TASK")?>',
 				MSLCreateTaskEntityLink: '<?=GetMessageJS("MOBILE_LOG_CREATE_TASK_LINK")?>',
 				MSLCreateTaskEntityLinkBLOG_POST: '<?=GetMessageJS("MOBILE_LOG_CREATE_TASK_LINK_BLOG_POST")?>',
@@ -593,6 +605,7 @@ else
 			?><div id="post_item_top_wrap" class="post-item-top-wrap post-item-copyable"><?
 				?><div class="post-item-top" id="post_item_top"></div><?
 				?><div class="post-item-post-block" id="post_block_check_cont"></div><?
+				?><div class="post-item-attached-file-wrap" id="post_block_files"></div><?
 
 				?><div id="post_inform_wrap_two" class="post-item-inform-wrap"><?
 
@@ -667,7 +680,6 @@ else
 			{
 				if (intval($arEvent["SOURCE_ID"]) > 0)
 				{
-                    // var_dump(__LINE__);
 					$arComponentParams = array(
 						"PATH_TO_BLOG" => $arParams["PATH_TO_USER_BLOG"],
 						"PATH_TO_POST" => $arParams["PATH_TO_USER_MICROBLOG_POST"],
@@ -732,7 +744,9 @@ else
 						"USE_FOLLOW" => $arParams["USE_FOLLOW"],
 						"USE_FAVORITES" => (isset($arResult["GROUP_READ_ONLY"]) && $arResult["GROUP_READ_ONLY"] == "Y" ? "N" : "Y"),
 						"GROUP_READ_ONLY" => (isset($arResult["GROUP_READ_ONLY"]) && $arResult["GROUP_READ_ONLY"] == "Y" ? "Y" : "N"),
-						"TOP_RATING_DATA" => (!empty($arResult['TOP_RATING_DATA'][$arEvent["ID"]]) ? $arResult['TOP_RATING_DATA'][$arEvent["ID"]] : false)
+						"TOP_RATING_DATA" => (!empty($arResult['TOP_RATING_DATA'][$arEvent["ID"]]) ? $arResult['TOP_RATING_DATA'][$arEvent["ID"]] : false),
+						"TARGET" => (isset($arParams["TARGET"]) && strlen($arParams["TARGET"]) > 0 ? $arParams["TARGET"] : false),
+						"SITE_TEMPLATE_ID" => (isset($arParams["SITE_TEMPLATE_ID"]) && strlen($arParams["SITE_TEMPLATE_ID"]) > 0 ? $arParams["SITE_TEMPLATE_ID"] : "")
 					);
 
 					if ($arParams["USE_FOLLOW"] == "Y")
@@ -776,7 +790,6 @@ else
 			}
 			else
 			{
-                var_dump(__LINE__);
 				$arComponentParams = array_merge($arParams, array(
 						"LOG_ID" => $arEvent["ID"],
 						"IS_LIST" => (intval($arParams["LOG_ID"]) <= 0),
@@ -792,7 +805,8 @@ else
 							"LOG_DATE" => $arEvent["LOG_DATE"],
 							"COMMENTS_COUNT" => $arEvent["COMMENTS_COUNT"],
 						),
-						"TOP_RATING_DATA" => (!empty($arResult['TOP_RATING_DATA'][$arEvent["ID"]]) ? $arResult['TOP_RATING_DATA'][$arEvent["ID"]] : false)
+						"TOP_RATING_DATA" => (!empty($arResult['TOP_RATING_DATA'][$arEvent["ID"]]) ? $arResult['TOP_RATING_DATA'][$arEvent["ID"]] : false),
+						"TARGET" => (isset($arParams["TARGET"]) && strlen($arParams["TARGET"]) > 0 ? $arParams["TARGET"] : false)
 					)
 				);
 
@@ -1008,7 +1022,13 @@ else
 		}
 	}
 
-	if ($arParams["NEW_LOG_ID"] <= 0)
+	if (
+		$arParams["NEW_LOG_ID"] <= 0
+		&& (
+			!isset($arParams["TARGET"])
+			|| strlen($arParams["TARGET"]) <= 0
+		)
+	)
 	{
 		if (
 			$arParams["LOG_ID"] <= 0

@@ -24,8 +24,6 @@ $as = isset($_REQUEST["as"]) ? intval($_REQUEST["as"]) : 58;
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
-exit('here');
-
 $rsSite = CSite::GetByID($site_id);
 if ($arSite = $rsSite->Fetch())
 {
