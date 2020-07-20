@@ -317,7 +317,7 @@ JS
             ],
             "id" => "users",
         ],
-        [
+       /* [
             "imageUrl" => $imageDir . "favorite/icon-disk.png",
             "color" => "#3CD162",
             "title" => Loc::getMessage("MB_SHARED_FILES_MAIN_MENU_ITEM_NEW"),
@@ -355,7 +355,7 @@ JS
             "hidden" => !$diskEnabled || $isExtranetUser || !$allowedFeatures["files"],
 
 
-        ],
+        ],*/
         //DDB
         [
             "imageUrl" => $imageDir . "favorite/icon-disk.png",
@@ -676,7 +676,7 @@ JS
 
 
         ],
-        [
+        /*[
             "title" => Loc::getMessage("MB_SHARED_FILES_MAIN_MENU_ITEM_NEW"),
             "imageUrl" => $imageDir . "favorite/icon-disk.png",
             "color" => "#b9bdc3",
@@ -698,7 +698,7 @@ JS
             "hidden" => $diskEnabled || $isExtranetUser || !$allowedFeatures["files"],
 
 
-        ],
+        ],*/
     ],
 ];
 
