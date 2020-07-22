@@ -2,39 +2,43 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("");
 $APPLICATION->SetPageProperty("NOT_SHOW_NAV_CHAIN", "Y");
-$APPLICATION->SetPageProperty("title", htmlspecialcharsbx(COption::GetOptionString("main", "site_name", "Bitrix24")));
+$APPLICATION->SetPageProperty("title", "DET DIGITALE BILHUS");
 ?>
-<?$APPLICATION->IncludeComponent(
-	"bitrix:intranet.structure.birthday.nearest",
-	"widget",
-	Array(
-		"AJAX_MODE" => "N",
-		"AJAX_OPTION_ADDITIONAL" => "",
-		"AJAX_OPTION_HISTORY" => "N",
-		"AJAX_OPTION_JUMP" => "N",
-		"AJAX_OPTION_STYLE" => "Y",
-		"CACHE_TIME" => "3600",
-		"CACHE_TYPE" => "A",
+<?$APPLICATION->IncludeComponent("bitrix:intranet.structure.birthday.nearest", "widget_home", Array(
+	"AJAX_MODE" => "N",	// Enable AJAX mode
+		"AJAX_OPTION_ADDITIONAL" => "",	// Additional ID
+		"AJAX_OPTION_HISTORY" => "N",	// Emulate browser navigation
+		"AJAX_OPTION_JUMP" => "N",	// Enable scrolling to component's top
+		"AJAX_OPTION_STYLE" => "Y",	// Enable styles loading
+		"CACHE_TIME" => "3600",	// Cache time (sec.)
+		"CACHE_TYPE" => "A",	// Cache type
 		"COMPOSITE_FRAME_MODE" => "A",
 		"COMPOSITE_FRAME_TYPE" => "AUTO",
-		"DATE_FORMAT" => "d-m-Y",
-		"DATE_FORMAT_NO_YEAR" => (LANGUAGE_ID=="en")?"j. F":((LANGUAGE_ID=="de")?"j. F":"j F"),
-		"DATE_TIME_FORMAT" => "d.m.Y H:i:s",
-		"DEPARTMENT" => "0",
+		"DATE_FORMAT" => "d-m-Y",	// Date Format
+		"DATE_FORMAT_NO_YEAR" => (LANGUAGE_ID=="en")?"j. F":((LANGUAGE_ID=="de")?"j. F":"j F"),	// Date Format (without year)
+		"DATE_TIME_FORMAT" => "d.m.Y H:i:s",	// Date And Time Format
+		"DEPARTMENT" => "0",	// Department/Office
 		"DETAIL_URL" => "/company/personal/user/#USER_ID#/",
-		"NAME_TEMPLATE" => "",
-		"NUM_USERS" => "4",
-		"PATH_TO_CONPANY_DEPARTMENT" => "/company/structure.php?set_filter_structure=Y&structure_UF_DEPARTMENT=#ID#",
-		"PM_URL" => "/company/personal/messages/chat/#USER_ID#/",
-		"SHOW_LOGIN" => "Y",
-		"SHOW_YEAR" => "Y",
-		"STRUCTURE_FILTER" => "structure",
-		"STRUCTURE_PAGE" => "structure.php",
-		"USER_PROPERTY" => array("PERSONAL_PHONE","PERSONAL_MOBILE","WORK_PHONE","UF_DEPARTMENT")
-	)
+		"NAME_TEMPLATE" => "",	// Name Format
+		"NUM_USERS" => "50",	// Show Users
+		"PATH_TO_CONPANY_DEPARTMENT" => "/company/structure.php?set_filter_structure=Y&structure_UF_DEPARTMENT=#ID#",	// Template of Department Page Path
+		"PM_URL" => "/company/personal/messages/chat/#USER_ID#/",	// Personal Message Page
+		"SHOW_LOGIN" => "Y",	// Show Login Name if no required user name fields are available
+		"SHOW_YEAR" => "Y",	// Show Year of Birth
+		"STRUCTURE_FILTER" => "structure",	// Name of Company Structure Page Filter
+		"STRUCTURE_PAGE" => "structure.php",	// Company Structure Page
+		"USER_PROPERTY" => array(	// Custom Fields for Export
+			0 => "PERSONAL_PHONE",
+			1 => "PERSONAL_MOBILE",
+			2 => "WORK_PHONE",
+			3 => "UF_DEPARTMENT",
+		),
+		"COMPONENT_TEMPLATE" => "widget"
+	),
+	false
 );?>
 
-<?/*$APPLICATION->IncludeComponent(
+<?$APPLICATION->IncludeComponent(
 	"bitrix:calendar.events.list", 
 	"widget_home", 
 	array(
@@ -51,59 +55,12 @@ $APPLICATION->SetPageProperty("title", htmlspecialcharsbx(COption::GetOptionStri
 	),
 	false
 );
-*/?>
-
-<?
-/*
-$APPLICATION->IncludeComponent(
-	"bitrix:intranet.structure.birthday.nearest",
-	"widget",
-	Array(
-		"AJAX_OPTION_ADDITIONAL" => "",
-		"CACHE_TIME" => "3600",
-		"CACHE_TYPE" => "A",
-		"DATE_FORMAT" => "j F",
-		"DATE_FORMAT_NO_YEAR" => (LANGUAGE_ID=="en")?"F j":((LANGUAGE_ID=="de")?"j. F":"j F"),
-		"DEPARTMENT" => "0",
-		"DETAIL_URL" => "/company/personal/user/#USER_ID#/",
-		"NAME_TEMPLATE" => "",
-		"NUM_USERS" => "4",
-		"SHOW_LOGIN" => "Y",
-		"SHOW_YEAR" => "N"
-	)
-);
-*/
 ?>
-
-
-<?
-/*if(CModule::IncludeModule('tasks')):
-	$APPLICATION->IncludeComponent(
-		"bitrix:tasks.filter.v2",
-		"widget",
-		array(
-			"VIEW_TYPE" => 0,
-			"COMMON_FILTER" => array("ONLY_ROOT_TASKS" => "Y"),
-			"USER_ID" => $USER->GetID(),
-			"ROLE_FILTER_SUFFIX" => "",
-			"PATH_TO_TASKS" => "/company/personal/user/".$USER->GetID()."/tasks/",
-			"CHECK_TASK_IN" => "R"
-		),
-		null,
-		array("HIDE_ICONS" => "N")
-	);
-endif;
-*/
-?>
-
-
 
 <?
 if (SITE_TEMPLATE_ID !== "bitrix24")
 	return;
 ?>&nbsp;
-
-
 
 <?
 
@@ -139,7 +96,7 @@ $APPLICATION->IncludeComponent(
 		"PHOTO_USE_CAPTCHA" => "N",
 		"PHOTO_USE_COMMENTS" => "Y",
 		"RATING_TYPE" => "",
-		"SET_LOG_CACHE" => "Y",
+		"SET_LOG_CACHE" => "N",
 		"SET_NAV_CHAIN" => "Y",
 		"SET_TITLE" => "Y",
 		"SHOW_EVENT_ID_FILTER" => "Y",
@@ -239,7 +196,10 @@ endif;?>
 ?>
 
 
-<?$APPLICATION->IncludeComponent(
+
+<?
+/*
+$APPLICATION->IncludeComponent(
 	"bitrix:blog.popular_posts",
 	"widget",
 	Array(
@@ -259,7 +219,9 @@ endif;?>
 		"USE_SOCNET" => "Y",
 		"WIDGET_MODE" => "Y"
 	)
-);?>
+);
+*/
+?>
 
 <?if(CModule::IncludeModule('bizproc')):
 	$APPLICATION->IncludeComponent(

@@ -93,7 +93,6 @@ $MESS["MOBILE_LOG_SLIDER_FAVORITES"] = "Lesezeichen";
 $MESS["MOBILE_LOG_TEXTPANEL_MENU_GALLERY"] = "Aus Fotogalerie auswählen";
 $MESS["MOBILE_LOG_TEXTPANEL_MENU_PHOTO"] = "Foto machen";
 $MESS["MOBILE_LOG_TITLE"] = "Activity Stream";
-$MESS["MOBILE_LOG_TITLE_NEWS"] = "Activity Feed";
 $MESS["MOBILE_LOG_WORK"] = "Arbeit";
 $MESS["MOBILE_PLAYER_ERROR_MESSAGE"] = "Die App kann diese Datei leider nicht wiedergeben.<br />Sie können sie <span class=\"disk-mobile-player-download\">herunterladen</span> und auf Ihrem eigenen Gerät wiedergeben.";
 $MESS["MOBILE_TASKS_VIEW_TAB_CHECKLIST"] = "Checkliste";

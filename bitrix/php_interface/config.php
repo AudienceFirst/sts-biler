@@ -1,5 +1,5 @@
 <?php
-
+// you are on ddb live config file
 define('DEV_MODE', true);
 define('LIVE_SITE', true); // http://erabiler.cloud2business.dk/
 // define('LIVE_SITE', false); // http://167.71.33.87/

@@ -23,6 +23,7 @@ if (
 {
 	$APPLICATION->AddHeadScript("/bitrix/components/bitrix/voting.uf/templates/.default/script.js");
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/components/bitrix/voting.uf/templates/.default/style.css').'" type="text/css" rel="stylesheet" />');
+	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/js/ui/buttons/ui.buttons.css').'" type="text/css" rel="stylesheet" />');
 }
 else if (IsModuleInstalled("vote"))
 {
@@ -34,10 +35,6 @@ if ($arParams["EMPTY_PAGE"] == "Y")
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/components/bitrix/rating.vote/templates/like_react/style.css').'" type="text/css" rel="stylesheet" />');
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/js/ui/icons/base/ui.icons.base.css').'" type="text/css" rel="stylesheet" />');
 	\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/js/ui/icons/b24/ui.icons.b24.css').'" type="text/css" rel="stylesheet" />');
-	if (\Bitrix\Main\ModuleManager::isModuleInstalled('disk'))
-	{
-		\Bitrix\Main\Page\Asset::getInstance()->addString('<link href="'.CUtil::GetAdditionalFileURL('/bitrix/components/bitrix/disk.uf.file/templates/mobile_grid/style.css').'" type="text/css" rel="stylesheet" />');
-	}
 }
 
 $APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH."/log_mobile.js");
@@ -47,11 +44,14 @@ $APPLICATION->SetUniqueCSS('live_feed_mobile');
 CUtil::InitJSCore(array('date', 'ls', 'fx', 'comment_aux', 'content_view'));
 UI\Extension::load("main.rating"); // js only
 UI\Extension::load("socialnetwork.commentaux"); // lang messages only
-UI\Extension::load([ "ui.buttons", "ui.icons.disk" ]);
 
 if (Loader::includeModule('tasks'))
 {
 	CUtil::InitJSCore(array('tasks', 'tasks_util_query'));
+}
+if (Loader::includeModule('vote'))
+{
+	UI\Extension::load("ui.buttons");
 }
 
 if (strlen($arResult["FatalError"])>0)
@@ -223,8 +223,7 @@ else
 			strCounterType: '<?=$arResult["COUNTER_TYPE"]?>',
 			bFollowDefault: <?=($arResult["FOLLOW_DEFAULT"] != "N" ? "true" : "false")?>,
 			bShowExpertMode: <?=($arResult["SHOW_EXPERT_MODE"] == "Y" ? "true" : "false")?>,
-			bExpertMode: <?=($arResult["EXPERT_MODE"] == "Y" ? "true" : "false")?>,
-			ftMinTokenSize: <?=intval($arResult["ftMinTokenSize"])?>
+			bExpertMode: <?=($arResult["EXPERT_MODE"] == "Y" ? "true" : "false")?>
 		};
 
 		BX.ready(function() {
@@ -272,7 +271,7 @@ else
 		}
 		else
 		{
-			$pageTitle = GetMessageJS("MOBILE_LOG_TITLE_NEWS");
+			$pageTitle = GetMessageJS("MOBILE_LOG_TITLE");
 		}
 
 		?><script>
@@ -495,7 +494,6 @@ else
 
 	if ($arParams["NEW_LOG_ID"] <= 0)
 	{
-		?><div class="feed-add-post-button" style="" id="feed-add-post-button" onclick="app.exec('showPostForm', oMSL.showNewPostForm());"></div><?
 		?><div class="lenta-wrapper" id="lenta_wrapper"><?
 			?><div class="post-comment-block-scroll post-comment-block-scroll-top" style="" id="post-scroll-button-top" onclick="oMSL.scrollTo('top');"><div class="post-comment-block-scroll-arrow post-comment-block-scroll-arrow-top"></div></div><?
 			?><div class="post-comment-block-scroll post-comment-block-scroll-bottom" style="" id="post-scroll-button-bottom" onclick="oMSL.scrollTo('bottom');"><div class="post-comment-block-scroll-arrow post-comment-block-scroll-arrow-bottom"></div></div><? // scroll
@@ -605,7 +603,6 @@ else
 			?><div id="post_item_top_wrap" class="post-item-top-wrap post-item-copyable"><?
 				?><div class="post-item-top" id="post_item_top"></div><?
 				?><div class="post-item-post-block" id="post_block_check_cont"></div><?
-				?><div class="post-item-attached-file-wrap" id="post_block_files"></div><?
 
 				?><div id="post_inform_wrap_two" class="post-item-inform-wrap"><?
 

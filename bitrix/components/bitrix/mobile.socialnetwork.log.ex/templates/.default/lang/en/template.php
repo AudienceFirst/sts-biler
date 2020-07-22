@@ -93,7 +93,6 @@ $MESS["MOBILE_LOG_SLIDER_FAVORITES"] = "Favorites";
 $MESS["MOBILE_LOG_TEXTPANEL_MENU_GALLERY"] = "Select from gallery";
 $MESS["MOBILE_LOG_TEXTPANEL_MENU_PHOTO"] = "Take photo";
 $MESS["MOBILE_LOG_TITLE"] = "Activity Stream";
-$MESS["MOBILE_LOG_TITLE_NEWS"] = "Activity Feed";
 $MESS["MOBILE_LOG_WORK"] = "Work";
 $MESS["MOBILE_PLAYER_ERROR_MESSAGE"] = "Unfortunately the app cannot play this file.<br />You can <span class=\"disk-mobile-player-download\">download it</span> and play it on your device.";
 $MESS["MOBILE_TASKS_VIEW_TAB_CHECKLIST"] = "Checklist";

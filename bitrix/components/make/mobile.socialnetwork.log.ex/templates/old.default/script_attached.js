@@ -7284,6 +7284,8 @@ BitrixMSL.prototype.getPostFormAttachFileSettings = function()
 
 BitrixMSL.prototype.getPostFormRecipientsDataSource = function()
 {
+	// var e = BX.message('MSLSiteDir') + 'mobile/index.php?mobile_action=' + (BX.message('MSLIsExtranetSite') == 'Y' ? 'get_group_list' : 'get_usergroup_list');
+	// alert(e);
 	return {
 		return_full_mode: "YES",
 		outsection: (BX.message('MSLIsDenyToAll') != 'Y' ? "YES" : "NO"),
@@ -7293,6 +7295,7 @@ BitrixMSL.prototype.getPostFormRecipientsDataSource = function()
 		alphabet_index: "YES",
 		showtitle: "YES",
 		user_all: "YES",
+		group_all: "YES",
 		url: "/mobile/customs_list.php"
 		//url: BX.message('MSLSiteDir') + 'mobile/index.php?mobile_action=' + (BX.message('MSLIsExtranetSite') == 'Y' ? 'get_group_list' : 'get_usergroup_list')
 	};

@@ -62,7 +62,6 @@ $MESS["MOBILE_LOG_SHARE_TABLE_CANCEL"] = "Отмена";
 $MESS["MOBILE_LOG_TEXTPANEL_MENU_PHOTO"] = "Снять фото";
 $MESS["MOBILE_LOG_TEXTPANEL_MENU_GALLERY"] = "Выбрать из галереи";
 $MESS["MOBILE_LOG_TITLE"] = "Живая лента";
-$MESS["MOBILE_LOG_TITLE_NEWS"] = "Новости";
 $MESS["MOBILE_LOG_ENTRY_TITLE"] = "Запись";
 $MESS["MOBILE_LOG_LIKE"] = "Нравится";
 $MESS["MOBILE_LOG_LIKE2"] = "Нравится:";

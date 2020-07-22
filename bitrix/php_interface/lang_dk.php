@@ -6,5 +6,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
 
 global $MESS;
 
+/*
 $MESS['MENU_CALENDAR_USER'] = 'My Calendar';
 $MESS['MENU_CALENDAR_COMPANY'] = 'Company Calendar';
+*/

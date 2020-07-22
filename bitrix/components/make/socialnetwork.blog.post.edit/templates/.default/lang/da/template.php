@@ -1,0 +1,43 @@
+<?
+$MESS["BLOG_BUTTON_CANCEL"] = "Afbryd";
+$MESS["BLOG_BUTTON_DRAFT"] = "Gem som kladde";
+$MESS["BLOG_BUTTON_PUBLISH"] = "Udgiv";
+$MESS["BLOG_BUTTON_SEND"] = "Opret";
+$MESS["BLOG_DIALOG"] = "Vælg dokument fra bibliotek";
+$MESS["BLOG_DIALOG_ALT"] = "åbn dokument fra Bitrix24 mappe";
+$MESS["BLOG_DRAG"] = "eller træk og slip filer hertil";
+$MESS["BLOG_GRATMEDAL_1"] = "Tilføj medarbejdere";
+$MESS["BLOG_GRATMEDAL_2"] = "Tilføj flere";
+$MESS["BLOG_GRAT_POPUP_TITLE"] = "Vælg en";
+$MESS["BLOG_LINK_SHOW_NEW"] = "<font size=\"2\">Opret indlæg &hellip; 
+Indlæg som oprettes i denne aktivitetsstrøm kan kun læses af medarbejdere med rettigheder hertil. <br>Skal beskeden læses af andre SKAL indlæg oprettes i aktivitetsstrømmen under &quot;Det Digitale Bilhus&quot;</font>
+";
+$MESS["BLOG_PICKUP"] = "Vælg fil på lokal computer";
+$MESS["BLOG_POST_AUTOSAVE"] = "Blogindlægsdata er ikke gemt.";
+$MESS["BLOG_POST_AUTOSAVE2"] = "Vil du vende tilbage til automatisk gemte værdier?";
+$MESS["BLOG_POST_EDIT_T_CREATE_TASK_BUTTON_TITLE"] = "Du kan nu se og redigere opgaven.";
+$MESS["BLOG_POST_EDIT_T_CREATE_TASK_SUCCESS_TITLE"] = "Opgave er oprettet";
+$MESS["BLOG_P_PHOTO"] = "Foto:";
+$MESS["BLOG_TAB_FILE"] = "Fil";
+$MESS["BLOG_TAB_GRAT"] = "Påskønnelse";
+$MESS["BLOG_TAB_LISTS"] = "Arbejdsgang";
+$MESS["BLOG_TAB_POST"] = "Indlæg";
+$MESS["BLOG_TAB_TASK"] = "Opgave";
+$MESS["BLOG_TAB_VOTE"] = "Afstemning";
+$MESS["BLOG_TITLE"] = "Emne";
+$MESS["BLOG_TITLE_GRAT"] = "Modtager:";
+$MESS["BLOG_TITLE_GRAT_OTHER"] = "andre";
+$MESS["BLOG_UPLOAD"] = "Upload fil eller billede";
+$MESS["IMPORTANT_FOR_ALWAYS"] = "altid";
+$MESS["IMPORTANT_FOR_CUSTOM"] = "indtil";
+$MESS["IMPORTANT_FOR_MONTH"] = "en måned";
+$MESS["IMPORTANT_FOR_ONE_DAY"] = "en dag";
+$MESS["IMPORTANT_FOR_TWO_DAYS"] = "to dage";
+$MESS["IMPORTANT_FOR_WEEK"] = "en uge";
+$MESS["IMPORTANT_TILL_TITLE"] = "vis meddelelse:";
+$MESS["LISTS_CATALOG_PROCESSES_ACCESS_DENIED"] = "Ingen adgang";
+$MESS["MPF_DRAG_ATTACHMENTS2"] = "Upload filer?";
+$MESS["SBPE_CALENDAR_EVENT"] = "Begivenhed";
+$MESS["SBPE_IMPORTANT_MESSAGE"] = "Bekendtgørelse";
+$MESS["SBPE_MORE"] = "Flere";
+?>
