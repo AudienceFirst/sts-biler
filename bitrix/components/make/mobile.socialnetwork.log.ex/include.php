@@ -11,11 +11,11 @@ if (!function_exists('__MSLLogGetIds'))
         unset($arFilter['LOG_RIGHTS']);
         unset($arFilter['LOG_RIGHTS_SG']);
 
-		/*echo '<pre style="display: none;">';
-		print_r($arFilter);
-		echo '</pre>';*/
+        /*echo '<pre style="display: none;">';
+        print_r($arFilter);
+        echo '</pre>';*/
 
-		// SB-31. Restrict posts on mobile when viewiing workgroup only streams
+        // SB-31. Restrict posts on mobile when viewiing workgroup only streams
         if (isset($_REQUEST['group_id'])) {
             $arFilter['LOG_RIGHTS'] = ['SG'.$_REQUEST['group_id']];
         }
