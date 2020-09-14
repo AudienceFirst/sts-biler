@@ -2,7 +2,6 @@
 <?
 CModule::IncludeModule("socialnetwork");
 
-
 $arGroups = Array(12, 17, 19, 21, 23, 25, 27, 29);
 
 $getUserGroups = $USER->GetUserGroupArray();

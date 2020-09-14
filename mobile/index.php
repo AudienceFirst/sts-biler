@@ -21,25 +21,175 @@ if (IsModuleInstalled("bitrix24"))
 
 global $USER;
 
-function dump_log( $log )
+function sonetSiteIdByStream($stream)
 {
-    $filename = $_SERVER["DOCUMENT_ROOT"].'/mailerlog.txt';
-    $dumpContent = '';
+    $stream = trim($stream);
 
-    if (!file_exists($filename)){}
-    if (!$handle = fopen($filename, 'a+')){}
+    $site = 's1';
+    switch ($stream) {
 
-    if (is_writable($filename)){
-        $dumpContent .= date('d-m-y h:i:s')." : ";
-        $dumpContent .= json_encode($log)." - ".$_SERVER['HTTP_HOST']." <- from mailbox \n";
+        case 'DR50':
+        $site = 'mh';
+        break; // sts biler
         
-        if (fwrite($handle, $dumpContent) === FALSE){
-            echo "Cannot write to file ($filename)";
-            exit;
-        }
+        case 'DR51':
+        $site = 'lb';
+        break; // era biler
         
-        fclose($handle);
+        case 'DR53':
+        $site = 'py';
+        break; // mfa biler
+        
+        case 'DR54':
+        $site = 'rc';
+        break; // bil og co
+        
+        case 'DR55':
+        $site = 'jf';
+        break; // nhe biler
+        
+        case 'DR56':
+        $site = 'ku';
+        break; // autohallen
+        
+        case 'DR52':
+        $site = 'qy';
+        break;// sdk biler
+
+        case 'DR1':
+        default:
+        $site = 's1';
+        break; // ddb/ main stream
     }
+
+    return $site; 
+}
+
+function sonetGroupStream($post)
+{
+
+    if (!$post || empty($post))
+        return intval($_REQUEST["group_id"]);
+
+    global $USER;
+
+    $sonetStreams = [
+        12 => 'DR1', // ddb/ main stream
+        17 => 'DR50', // sts biler
+        19 => 'DR51', // era biler
+        21 => 'DR53', // mfa biler
+        23 => 'DR54', // bil og co
+        25 => 'DR55', // nhe biler
+        27 => 'DR56', // autohallen
+        29 => 'DR52' // sdk biler
+    ];
+
+    $departmentGroups = [
+        'DDB' => 12,
+        'STS' => 17, // sts biler
+        'ERA' => 19, // era biler
+        'MFA' => 21, // mfa biler
+        'BIL' => 23, // bil og co
+        'NHE' => 25, // nhe biler
+        'AUT' => 27, // autohallen
+        'SDK' => 29 // sdk biler
+    ];
+
+    $usergroups = $USER->GetUserGroup($USER->GetID());
+    sort($usergroups);
+
+    dump_log($usergroups);
+
+    $defaultSonet = 0; // DDB
+    reset($usergroups);
+    foreach ($usergroups as $key => $value) {
+        
+        if ($value == $departmentGroups['DDB'])
+            continue;
+
+        if (!$defaultSonet && in_array($value, $departmentGroups)) {
+            $defaultSonet = $value;
+            break;
+        }
+    }
+
+    $socnetStreams = [];
+
+    // get users
+    foreach ($post['SPERM']['U'] as $spermUser) {
+        
+        $sonetUser = str_ireplace('u', '', $spermUser);
+
+        // post to sender's stream by default for main admin
+        // if (intval($sonetUser) === 1)
+        //     continue;
+
+        // get socnetUser socnet departments
+
+        // get socnetUser groups
+        $sonetUsergroups = $USER->GetUserGroup($sonetUser);
+        sort($sonetUsergroups);
+
+        // dump_log($defaultSonet);
+        // dump_log($usergroups);
+        // dump_log($sonetUsergroups);
+
+        // what happens here is, we match the sonet user's group with the groups by the user who posted in the stream
+        // we apply posting rules accordingly (SB-59)
+        // $streamFound = false;
+        // reset($usergroups);
+        // foreach ($usergroups as $refkey => $refvalue) {
+
+        //     if ($refvalue == $departmentGroups['DDB'])
+        //         continue;
+
+        //     if (!in_array($refvalue, $departmentGroups))
+        //         continue;
+
+        //     // assign post to matching department stream (1 matching dept stream only)
+        //     if (in_array($refvalue, $sonetUsergroups)) {
+
+        //         // check first if we can post to sender's stream
+        //         if (in_array($defaultSonet, $sonetUsergroups)) {
+        //             $socnetStreams[$defaultSonet][] = $sonetUser;
+        //         }
+        //         else {
+        //             $socnetStreams[$refvalue][] = $sonetUser;
+        //         }
+
+        //         $streamFound = true;
+        //         break;
+        //     }
+        // }
+
+        // // DDB is main /stream/, this will be default option only if no matching dept stream is found
+        // if (!$streamFound) {
+        //     $socnetStreams[ $departmentGroups['DDB'] ][] = $sonetUser;
+        // }
+
+        if (in_array($defaultSonet, $sonetUsergroups)) {
+            $socnetStreams[ $defaultSonet ][] = $sonetUser;
+        }
+        else {
+            $socnetStreams[ $departmentGroups['DDB'] ][] = $sonetUser;
+        }
+    }
+
+    reset($socnetStreams);
+    
+    $sonetKeys = array_keys($socnetStreams);
+
+    dump_log($socnetStreams);
+    dump_log($sonetKeys);
+
+    if (empty($sonetKeys) || count($sonetKeys) > 1) {
+        $sonetGroupToPost = $sonetStreams[ $departmentGroups['DDB'] ];
+    }
+    else {
+        $sonetGroupToPost = $sonetStreams[ current($sonetKeys) ];   
+    }
+
+    return $sonetGroupToPost;
 }
 
 if (
@@ -47,6 +197,8 @@ if (
     || $_POST["ACTION"] == "EDIT_POST"
 )
 {
+    dump_log($_POST);
+    
     function LocalRedirectHandler(&$url)
     {
         $bSuccess = false;
@@ -130,13 +282,38 @@ if (
 
     $LocalRedirectHandlerId = AddEventHandler('main', 'OnBeforeLocalRedirect', "LocalRedirectHandler");
 
-    $APPLICATION->IncludeComponent("bitrix:socialnetwork.blog.post.edit", "mobile_empty", array(
+    $sonetStream = sonetGroupStream($_POST);
+
+    // $sonetSiteId = SITE_ID;
+    $sonetSiteId = sonetSiteIdByStream($sonetStream);
+
+    dump_log($sonetStream);
+    dump_log($sonetSiteId);
+
+    $params =  array(
             "ID" => ($_POST["ACTION"] == "EDIT_POST" && intval($_POST["post_id"]) > 0 ? intval($_POST["post_id"]) : 0),
             "USER_ID" => ($_POST["ACTION"] == "EDIT_POST" && intval($_POST["post_user_id"]) > 0 ? intval($_POST["post_user_id"]) : $GLOBALS["USER"]->GetID()),
             "PATH_TO_POST_EDIT" => $APPLICATION->GetCurPageParam("success=Y&new_post_id=#post_id#"), // redirect when success
             "PATH_TO_POST" => "/company/personal/user/".$GLOBALS["USER"]->GetID()."/blog/#post_id#/", // search index
             "USE_SOCNET" => "Y",
             "SOCNET_GROUP_ID" => intval($_REQUEST["group_id"]),
+            "SOCNET_RIGHTS" => $sonetStream,
+            "SONET_SITE_ID" => $sonetSiteId,
+            "GROUP_ID" => (IsModuleInstalled("bitrix24") ? $GLOBAL_BLOG_GROUP[SITE_ID] : 1),
+            "MOBILE" => "Y"
+        );
+    dump_log($params);
+
+// exit();
+    $APPLICATION->IncludeComponent("make:socialnetwork.blog.post.edit", "mobile_empty", array(
+            "ID" => ($_POST["ACTION"] == "EDIT_POST" && intval($_POST["post_id"]) > 0 ? intval($_POST["post_id"]) : 0),
+            "USER_ID" => ($_POST["ACTION"] == "EDIT_POST" && intval($_POST["post_user_id"]) > 0 ? intval($_POST["post_user_id"]) : $GLOBALS["USER"]->GetID()),
+            "PATH_TO_POST_EDIT" => $APPLICATION->GetCurPageParam("success=Y&new_post_id=#post_id#"), // redirect when success
+            "PATH_TO_POST" => "/company/personal/user/".$GLOBALS["USER"]->GetID()."/blog/#post_id#/", // search index
+            "USE_SOCNET" => "Y",
+            "SOCNET_GROUP_ID" => intval($_REQUEST["group_id"]),
+            "SOCNET_RIGHTS" => $sonetStream,
+            "SONET_SITE_ID" => $sonetSiteId,
             "GROUP_ID" => (IsModuleInstalled("bitrix24") ? $GLOBAL_BLOG_GROUP[SITE_ID] : 1),
             "MOBILE" => "Y"
         ),
@@ -183,7 +360,7 @@ $groupId = userBlogGroupId();
 $loadDefault = false;
 
 // check if workgroup stream is being loaded
-$workgroupId = $_REQUEST['group_id'] ?? 0;
+$workgroupId = !empty($_REQUEST['group_id']) ? $_REQUEST['group_id'] : 0;
 if ($workgroupId) {
     CModule::IncludeModule("socialnetwork");
     
@@ -192,14 +369,17 @@ if ($workgroupId) {
 
 }
 
+?>
+<pre style='display:none;'>test</pre>
+<?
+
 $component = 'make:mobile.socialnetwork.log.ex';
 // if ($loadDefault)
-//     $component = 'bitrix:mobile.socialnetwork.log.ex';
-?>
-<?$APPLICATION->IncludeComponent($component, ".default", array(
+    // $component = 'bitrix:mobile.socialnetwork.log.ex';
+
+?><?$APPLICATION->IncludeComponent($component, ".default", array(
         // "GROUP_ID" => intval($_GET["group_id"]),
-        "GROUP_ID" => $_GET["group_id"] ?? $groupId,
-        // "GROUP_ID" => $groupId,
+        "GROUP_ID" => $workgroupId ? $workgroupId : $groupId,
         "LOG_ID" => intval($_GET["detail_log_id"]),
         "FAVORITES" => ($_GET["favorites"] == "Y" ? "Y" : "N"),
         "FILTER" => $filter,

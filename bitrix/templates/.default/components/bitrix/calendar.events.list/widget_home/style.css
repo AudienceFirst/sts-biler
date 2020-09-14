@@ -1,0 +1,28 @@
+#sidebar .sidebar-widget-calendar .sidebar-widget-item {
+	padding-left: 30px;
+}
+
+#sidebar .calendar-item-date,
+#sidebar .calendar-item-text {
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+span.calendar-item-link {
+	color: #4a4848;
+	font-weight: bold;
+    font-size: 12px;
+}
+
+.calendar-item-location {
+	color: #4a4848;
+    font-size: 12px;
+}
+
+.calendar-color-label {
+	padding: 8px;
+    display: inline-block;
+    position: absolute;
+    left: 5px;
+}

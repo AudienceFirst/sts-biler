@@ -1,0 +1,37 @@
+<?
+$MESS["MB_LIVE_FEED"] = "Nyheder";
+$MESS["MB_MESSAGES"] = "Beskeder";
+$MESS["MB_COMPANY"] = "Medarbejdere ";
+$MESS["MB_CONTACTS"] = "Kontakter";
+$MESS["MB_SEC_FAVORITE"] = "My Workspace";
+$MESS["MB_SEC_GROUPS"] = "Grupper ";
+$MESS["MB_SEC_EXTRANET"] = "Extranet Groups";
+$MESS["MB_EXIT"] = "Log ud";
+$MESS["MB_HELP"] = "Hjælp";
+$MESS["MB_MY_BITRIX24"] = "Min konto";
+$MESS["MB_TASKS_MAIN_MENU_ITEM"] = "Opgaver";
+$MESS["MB_BP_MAIN_MENU_ITEM"] = "Workflow";
+$MESS["MB_CALENDAR_LIST"] = "Kalender";
+$MESS["MB_CURRENT_USER_FILES_MAIN_MENU_ITEM"] = "Mit drev ";
+$MESS["MB_SHARED_FILES_MAIN_MENU_ITEM"] = "Fælles drev";
+$MESS["PULL_TEXT"] = "Træk ned for at opdatere";
+$MESS["DOWN_TEXT"] = "Slip for at opdatere";
+$MESS["LOAD_TEXT"] = "Opdatering af menuen...";
+$MESS["MB_CRM_ACTIVITY"] = "Mine aktiviteter";
+$MESS["MB_CRM_CONTACT"] = "Kontatker";
+$MESS["MB_CRM_COMPANY"] = "Virksomheder";
+$MESS["MB_CRM_DEAL"] = "Aftaler";
+$MESS["MB_CRM_LEAD"] = "Leads";
+$MESS["MB_CRM_INVOICE"] = "Invoices";
+$MESS["MB_CRM_PRODUCT"] = "Produkter";
+$MESS["MB_CURRENT_USER_FILES_MAIN_MENU_ITEM_NEW"] = "Mit drev";
+$MESS["MB_SHARED_FILES_MAIN_MENU_ITEM_NEW"] = "Fælles drev";
+$MESS["MB_CHAT_AND_CALLS"] = "Chat og opkald";
+$MESS["MB_MARKETPLACE_GROUP_TITLE"] = "Applikationer";
+$MESS["MB_CRM_QUOTE"] = "Quotes";
+$MESS["MB_ASK_SYNC_CARDDAV"] = "Ønsker du at synkronisere Bitrix24 med telefonens kontakter?";
+$MESS["MB_ASK_SYNC_YES"] = "Ja";
+$MESS["MB_ASK_SYNC_NO"] = "Nej";
+$MESS["MB_COPY_PUBLIC_LINK"] = "Kopier offentligt link";
+$MESS["MB_COPY_LINK_COPIED_MESSAGE"] = "Link er blevet kopieret til Udklipsholderen";
+?>

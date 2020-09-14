@@ -20,9 +20,11 @@ global $USER;
  */
 
 $allowedFeatures = [];
+
 $hereDocGetMessage = function ($code) {
     return Loc::getMessage($code);
 };
+
 if (CModule::IncludeModule("socialnetwork"))
 {
     $arUserActiveFeatures = CSocNetFeatures::getActiveFeatures(SONET_ENTITY_USER, $USER->getId());
@@ -78,6 +80,7 @@ if ($isExtranetUser)
 
 $imageDir = $this->getPath() . "/images/";
 $canInviteUsers = (IsModuleInstalled("bitrix24") && $USER->CanDoOperation('bitrix24_invite')) ? "1" : "0";
+
 $diskComponentVersion = \Bitrix\MobileApp\Janative\Manager::getComponentVersion("user.disk");
 $calendarComponentVersion = \Bitrix\MobileApp\Janative\Manager::getComponentVersion("calendar.events");
 
@@ -94,6 +97,7 @@ $taskParams = json_encode([
 ]);
 
 $menuStructure = [ ];
+
 $getGroups = CUser::GetUserGroup($USER->GetID());
 
 //$isDDB = $isBoC = $isSDK = $isMFA = $isSTS = $isERA = $isAuto = $isNHE = false;
@@ -106,7 +110,6 @@ $isSTS = (in_array(17, $getGroups)) ? true : false;
 $isERA = (in_array(19, $getGroups)) ? true : false;
 $isAuto = (in_array(27, $getGroups)) ? true : false;
 $isNHE = (in_array(25, $getGroups)) ? true : false;
-
 
 $favorite = [
     "title" => Loc::getMessage("MB_SEC_FAVORITE"),
@@ -144,43 +147,64 @@ JS
 
                 , "onclick" => <<<JS
 
-//                          ComponentHelper.openList({
-//                              name:"calendar.events",
-//                              object:"list",
-//                              version:"{$calendarComponentVersion}",
-//                              componentParams:{userId: env.userId},
-//                              widgetParams:{
-//                                  title:this.title, 
-//                                  useSearch: false,
-//                                  doNotHideSearchResult: false
-//                              }
-//                          });
-                        
-                        PageManager.openList(
+                        if(Application.getApiVersion() >= 22)
                         {
-                            url:"/mobile/?mobile_action=calendar&user_id="+$userId,
-                            table_id:"calendar_list",
-                            table_settings: 
+                            PageManager.openComponent(
+                            "JSComponentList", 
                             {
-                                showTitle:"YES",
-                                name:"{$hereDocGetMessage("MB_CALENDAR_LIST")}",
-                                useTagsInSearch:"NO",
-                                button:{
-                                    type: 'plus',
-                                    eventName:"onCalendarEventAddButtonPushed"
+                                title:"{$hereDocGetMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY")}", 
+                                settings:{useSearch:true}, 
+                                scriptPath:availableComponents["users"]["publicUrl"],
+                                params:{
+                                    canInvite: {$canInviteUsers},
+                                    userId:{$userId}
                                 }
-                            }
-                        });
-
-                        if(typeof calendarEventAttached == "undefined")
-                        {
-                            calendarEventAttached = true;
-                            BX.addCustomEvent("onCalendarEventAddButtonPushed", ()=>{
-                                PageManager.openPage({url:"/mobile/calendar/edit_event.php", modal:true, data:{ modal:"Y"}});
                             });
                         }
-                        
+                        else
+                        {
+                            // ComponentHelper.openList({
+                            //     name:"calendar.events",
+                            //     object:"list",
+                            //     version:"{$calendarComponentVersion}",
+                            //     componentParams:{userId: env.userId},
+                            //     widgetParams:{
+                            //         title:this.title, 
+                            //         useSearch: false,
+                            //         doNotHideSearchResult: false
+                            //     }
+                            // });
+                            
+                            PageManager.openList(
+                            {
+                                // url:"/mobile/?mobile_action=calendar&user_id="+$userId,
+                                url:"/mobile/?mobile_action=get_user_list&tags=Y&detail_url=/mobile/users/?user_id=",
+                                table_id:"calendar_list",
+                                table_settings: 
+                                {
+                                    // showTitle:"YES",
+                                    // name:"{$hereDocGetMessage("MB_CALENDAR_LIST")}",
+                                    useTagsInSearch:"NO",
+                                    button:{
+                                        type: 'plus',
+                                        eventName:"onCalendarEventAddButtonPushed"
+                                    },
+                                    showTitle:"YES",
+                                    name:"{$hereDocGetMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY")}",
+                                    type:"users",
+                                    alphabet_index: "YES",
+                                    outsection: "NO"
+                                }
+                            });
 
+                            if(typeof calendarEventAttached == "undefined")
+                            {
+                                calendarEventAttached = true;
+                                BX.addCustomEvent("onCalendarEventAddButtonPushed", ()=>{
+                                    PageManager.openPage({url:"/mobile/calendar/edit_event.php", modal:true, data:{ modal:"Y"}});
+                                });
+                            }
+                        }
 JS
             ],
 
@@ -247,42 +271,91 @@ JS
         [
             "imageUrl" => $imageDir . "favorite/icon-users.png",
             "color" => "#AF9245",
-			"title" => Loc::getMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY"),
+            "title" => Loc::getMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY"),
             "attrs" => [
-                "onclick" => <<<JS
-                        if(Application.getApiVersion() >= 22)
-                        {
-                            PageManager.openComponent(
-                            "JSComponentList", 
-                            {
-                                title:"{$hereDocGetMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY")}", 
-                                settings:{useSearch:true}, 
-                                scriptPath:availableComponents["users"]["publicUrl"],
-                                params:{
-                                    canInvite: {$canInviteUsers},
-                                    userId:{$userId}
-                                }
-                            });
-                        }
-                        else
-                        {
-                            PageManager.openList({
-                                url:"/mobile/?mobile_action=get_user_list&tags=Y&detail_url=/mobile/users/?user_id=",
-                                table_settings: {
-                                    showTitle:"YES",
-                                    name:"{$hereDocGetMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY")}",
-                                    type:"users",
-                                    alphabet_index: "YES",
-                                    outsection: "NO"
-                                }
-                            });
-                        }
+                "onclick" =>
+                <<<JS
+                    if(Application.getApiVersion() >= 22)
+                    {
+                        var inviteParams = BX.componentParameters.get("invite");
 
-                        
+                        PageManager.openComponent(
+                        "JSComponentList", 
+                        {
+                            title:"{$hereDocGetMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY")}", 
+                            settings: {useSearch: true}, 
+                            componentCode: "users",
+                            scriptPath: availableComponents["users"]["publicUrl"],
+                            params:{
+                                COMPONENT_CODE: "users",
+                                // canInvite: {$canInviteUsers},
+                                canInvite: (inviteParams.canInviteUsers ? inviteParams.canInviteUsers : false),
+                                rootStructureSectionId: (inviteParams.rootStructureSectionId ? inviteParams.rootStructureSectionId : 1),
+                                registerUrl: (inviteParams.registerUrl ? inviteParams.registerUrl : ''),
+                                registerAdminConfirm: (inviteParams.registerAdminConfirm ? inviteParams.registerAdminConfirm : false),
+                                disableRegisterAdminConfirm: (inviteParams.disableRegisterAdminConfirm ? inviteParams.disableRegisterAdminConfirm : false),
+                                sharingMessage: (inviteParams.registerSharingMessage ? inviteParams.registerSharingMessage : ''),
+                                userId: {$userId}
+                            }
+                        });
+                    }
+                    else
+                    {
+                        PageManager.openList({
+                            url:"/mobile/?mobile_action=get_user_list&tags=Y&detail_url=/mobile/users/?user_id=",
+                            table_settings: {
+                                showTitle:"YES",
+                                name:"{$hereDocGetMessage($isExtranetUser ? "MB_CONTACTS" : "MB_COMPANY")}",
+                                type:"users",
+                                alphabet_index: "YES",
+                                outsection: "NO"
+                            }
+                        });
+                    }
+                    
 JS
             ],
-
+            "id" => "users",
         ],
+       /* [
+            "imageUrl" => $imageDir . "favorite/icon-disk.png",
+            "color" => "#3CD162",
+            "title" => Loc::getMessage("MB_SHARED_FILES_MAIN_MENU_ITEM_NEW"),
+            "attrs" => [
+                "onclick" => <<<JS
+                    
+                    if(Application.getApiVersion() >= 28)
+                        {
+                            ComponentHelper.openList({
+                                    name:"user.disk",
+                                    object:"list",
+                                    version:"{$diskComponentVersion}",
+                                    componentParams:{userId: env.userId, ownerId: "shared_files_s1", entityType:"common"},
+                                    widgetParams:{title:"{$hereDocGetMessage("MB_SHARED_FILES_MAIN_MENU_ITEM_NEW")}"}
+                            });
+                        }
+                        else 
+                        {
+                            PageManager.openList(
+                            {
+                                url:"/mobile/?mobile_action=disk_folder_list&type=common&path=/&entityId=shared_files_s1",
+                                table_settings: 
+                                {
+                                    name:"{$hereDocGetMessage("MB_SHARED_FILES_MAIN_MENU_ITEM_NEW")}",
+                                    showTitle:"YES",
+                                    useTagsInSearch:"NO",
+                                    type:"files",
+                                }
+                            });
+                        }
+                        
+JS
+                , "id" => "doc_shared"
+            ],
+            "hidden" => !$diskEnabled || $isExtranetUser || !$allowedFeatures["files"],
+
+
+        ],*/
         //DDB
         [
             "imageUrl" => $imageDir . "favorite/icon-disk.png",
@@ -603,7 +676,7 @@ JS
 
 
         ],
-        [
+        /*[
             "title" => Loc::getMessage("MB_SHARED_FILES_MAIN_MENU_ITEM_NEW"),
             "imageUrl" => $imageDir . "favorite/icon-disk.png",
             "color" => "#b9bdc3",
@@ -625,7 +698,7 @@ JS
             "hidden" => $diskEnabled || $isExtranetUser || !$allowedFeatures["files"],
 
 
-        ],
+        ],*/
     ],
 ];
 
@@ -888,7 +961,8 @@ if (CModule::IncludeModule("socialnetwork"))
                 "useLetterImage" => true,
                 "color" => "#40465A",
                 "params" => [
-
+                    "useSearchBar"=> true,
+                    "cache"=>false,
                     "url" => str_replace("#group_id#", $arGroups["GROUP_ID"], $strGroupSubjectLinkTemplate),
                     "data-modern-style" => "Y"
                 ],
@@ -904,14 +978,15 @@ if (CModule::IncludeModule("socialnetwork"))
     $arGroupIDCurrentSite = [];
 
     // Socialnetwork
-	//$arGroupFilterMy["GROUP_SITE_ID"] = SITE_ID;
+    // $arGroupFilterMy["GROUP_SITE_ID"] = SITE_ID;
 
-	$rsSites = CSite::GetList($by, $order, Array("ACTIVE" => "Y"));
-	$arr_site = [];
-	while ($arSite = $rsSites->Fetch()) {
-		$arr_site[] = $arSite['LID'];
-	}
-	$arGroupFilterMy["GROUP_SITE_ID"] = $arr_site;
+    $rsSites = CSite::GetList($by, $order, Array("ACTIVE" => "Y"));
+    $arr_site = [];
+    while ($arSite = $rsSites->Fetch()) {
+        $arr_site[] = $arSite['LID'];
+    }
+    $arGroupFilterMy["GROUP_SITE_ID"] = $arr_site;
+
     $dbGroups = CSocNetUserToGroup::GetList(
         ["GROUP_NAME" => "ASC"],
         $arGroupFilterMy,
@@ -950,7 +1025,8 @@ if (CModule::IncludeModule("socialnetwork"))
             "useLetterImage" => true,
             "color" => "#40465A",
             "params" => [
-
+                "useSearchBar"=> true,
+                "cache"=>false,
                 "url" => str_replace("#group_id#", $arGroups["GROUP_ID"], $strGroupSubjectLinkTemplate),
                 "data-modern-style" => "Y"
             ],
@@ -973,7 +1049,7 @@ if (CModule::IncludeModule("socialnetwork"))
 if (!empty($groups) || !empty($extranetGroups))
 {
     $groupSection = [
-		"title" => Loc::getMessage("MB_SEC_GROUPS"),
+        "title" => Loc::getMessage("MB_SEC_GROUPS"),
         "sort" => 130,
         "hidden" => false,
         "items" => [],
@@ -997,7 +1073,7 @@ if (!empty($groups) || !empty($extranetGroups))
         ];
     }
 
-	$menuStructure[] = $groupSection;
+    $menuStructure[] = $groupSection;
 
 
 }
@@ -1043,6 +1119,7 @@ if ($voximplantInstalled = Main\Loader::includeModule('voximplant'))
         "title" => GetMessage("MENU_TELEPHONY"),
         "min_api_version" => 22,
         "hidden" => !\Bitrix\Voximplant\Security\Helper::canCurrentUserPerformCalls(),
+        // "sort" => 3,
         "sort" => $menuSort,
         "items" => [
             [
@@ -1064,7 +1141,7 @@ JS
 $settingsComponentPath = \Bitrix\MobileApp\Janative\Manager::getComponentPath("settings");
 $settingsUserId = $USER->GetID();
 $settingsSiteId = SITE_ID;
-
+$isUserAdmin = ((\CModule::IncludeModule('bitrix24') ? \CBitrix24::isPortalAdmin($settingsUserId) : $USER->isAdmin()))? "true": "false";
 
 $settingsLanguageId = LANGUAGE_ID;
 
@@ -1088,6 +1165,7 @@ $menuStructure[] = [
                                 "USER_ID": $settingsUserId,
                                 "SITE_ID": "$settingsSiteId",
                                 "LANGUAGE_ID": "$settingsLanguageId",
+                                "IS_ADMIN": $isUserAdmin
                             },
                             rootWidget:{
                                 name:"settings",
@@ -1136,6 +1214,11 @@ if (Loader::includeModule("intranet") && !$isExtranetUser)
         ];
     }
 }
+
+// echo '<pre>$menuStructure is ';
+// print_r($menuStructure);
+// echo '</pre>';
+// die();
 
 
 return [

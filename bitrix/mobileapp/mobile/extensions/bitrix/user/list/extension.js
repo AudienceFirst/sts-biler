@@ -47,6 +47,11 @@
 			this.inited = false;
 		}
 
+		setOptions(options = {})
+		{
+			this.options = options;
+		}
+
 		init(enableEventListener = true)
 		{
 			if(this.list == null || this.inited === true)
@@ -71,7 +76,8 @@
 			this.request = new RequestExecutor("user.search",
 				{
 					"IMAGE_RESIZE": "small",
-					"SORT": "NAME",
+					// "SORT": "LAST_NAME",
+                    "SORT": "NAME",
 					"ORDER": "ASC",
 					"FILTER": {"ACTIVE": "Y", "HAS_DEPARTAMENT": "Y"}
 				})
@@ -123,7 +129,7 @@
 			}
 
 			let listData = Utils.prepareListForDraw(users);
-			let modifiedListData = this.prepareItems(listData);
+			let modifiedListData = this.prepareItems(listData, loadMore);
 
 			if (loadMore === false)
 			{
@@ -134,7 +140,7 @@
 			{
 				this.items = this.items.concat(modifiedListData);
 				this.list.addItems(modifiedListData);
-				if (this.request.hasNext())
+				if (this.request.hasNext() && this.options.disablePagination !== true)
 				{
 					this.list.updateItems([{
 						filter: {sectionCode: "service"},
@@ -163,19 +169,28 @@
 				let filterFunc = item =>
 				{
 					let query = params.filter.toLowerCase();
-					let match = (
-						ids.indexOf(item.params.id) < 0 &&
-						(item.title && item.title.toLowerCase().startsWith(query) ||
-						item.subtitle && item.subtitle.toLowerCase().startsWith(query) ||
-						item.sortValues.name && item.sortValues.name.toLowerCase().startsWith(query))
-					);
-
-					if (match)
+					try
 					{
-						ids.push(item.params.id);
+						let match = (
+							ids.indexOf(item.params.id) < 0 &&
+							(item.title && item.title.toLowerCase().startsWith(query) ||
+								item.subtitle && item.subtitle.toLowerCase().startsWith(query) ||
+								item.sortValues && item.sortValues.name && item.sortValues.name.toLowerCase().startsWith(query))
+						);
+
+						if (match)
+						{
+							ids.push(item.params.id);
+
+						}
+					}
+					catch (e)
+					{
+						console.warn(e);
 					}
 
-					return match;
+					return typeof match != "undefined";
+
 				};
 
 				items = this.items.filter(filterFunc).concat(this.searcher.currentSearchItems.filter(filterFunc));
@@ -183,7 +198,7 @@
 			else
 			{
 				items = this.prepareItems(this.items);
-				if (this.request.hasNext())
+				if (this.request.hasNext() &&  this.options.disablePagination !== true)
 				{
 					items = items.concat({
 						title: BX.message("LOAD_MORE_USERS") + " (" + this.request.getNextCount() + ")",
@@ -198,13 +213,13 @@
 			BX.onViewLoaded(() => this.list.setItems(items, [{id: "people"}, {id: "service"}]));
 		}
 
-		prepareItems(items)
+		prepareItems(items, loadMore)
 		{
 			if (this.delegate)
 			{
 				if (this.delegate.filterUserList)
 				{
-					items = this.delegate.filterUserList(items);
+					items = this.delegate.filterUserList(items, loadMore);
 				}
 				if (this.delegate.formatUserData)
 				{
@@ -318,10 +333,11 @@
 		 */
 		static openPicker(options = {})
 		{
-			if(Application.getApiVersion()>=32)
+			if(Application.getApiVersion() >= 32)
 			{
-				return new Promise((resolve, reject)=>{
-						(new RecipientList(["users"]))
+				return new Promise((resolve, reject)=>
+				{
+						(new RecipientList(["users"], options.listOptions))
 							.open(options)
 							.then(data => resolve(data["users"]))
 							.catch(e => reject(e))
@@ -378,7 +394,8 @@
 		{
 			this.searchRequest = new DelayedRestRequest("user.search",
 				{
-					"SORT": "NAME",
+					// "SORT": "LAST_NAME",
+                    "SORT": "NAME",
 					"ORDER": "ASC",
 					"FILTER": {"ACTIVE": "Y", "HAS_DEPARTAMENT": "Y"}
 				});
@@ -584,20 +601,25 @@
 	 * Search utils
 	 */
 
+	/**
+	 * @class UserListUtilss
+	 * @type {{getFormattedName: (function(*=, *=): any), prepareListForDraw: (function(*=): []), getFormattedHumanName: (function(*, *=): *)}}
+	 */
 	let Utils = {
 		prepareListForDraw: function (list)
 		{
-			console.error("!!");
 			let result = [];
 			let userFormatFunction = user => ({
 				title: Utils.getFormattedName(user),
 				subtitle: user.WORK_POSITION,
+				hasName: (Utils.getFormattedHumanName(user) !== ""),
 				sectionCode: "people",
 				color: "#5D5C67",
 				useLetterImage: true,
 				imageUrl: (user.PERSONAL_PHOTO === null ? undefined : encodeURI(user.PERSONAL_PHOTO)),
 				sortValues: {
-					name: user.NAME
+					// name: user.LAST_NAME
+                    name: user.NAME
 				},
 				params: {
 					id: user.ID,
@@ -614,9 +636,10 @@
 					.filter(user => user["UF_DEPARTMENT"] !== false && !Utils.getFormattedHumanName(user))
 					.map(userFormatFunction)
 					.sort((u1, u2) => u1.title > u2.title ? 1 : (u1.title === u2.title ? 0 : -1));
-				console.log(unknownUsers);
-				result = unknownUsers.concat(result);
 
+                console.log(unknownUsers);
+                
+				result = unknownUsers.concat(result);
 			}
 
 			return result;
@@ -709,5 +732,6 @@
 	};
 
 	this.UserList = UserList;
+	jnexport(["UserListUtils", Utils]);
 
 })();
